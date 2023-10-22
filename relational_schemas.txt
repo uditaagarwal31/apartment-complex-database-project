@@ -1,0 +1,145 @@
+/* Relational Schemas 22nd Oct*/
+
+drop table Property;
+
+create table Property(
+    property_id char(7),
+    name varchar(20),
+    street_num varchar(10),
+    street_name varchar(20),
+    apt_num varchar(10),
+    state char(20),
+    city char(20),
+    country char(20),
+    zipcode char(10),
+    primary key(property_id)
+);
+
+drop table Amenity;
+
+create table Amenity(
+    amenity_id char(7),
+    amenity_name varchar(20),
+    property_id char(7),
+    primary key(amenity_id),
+    foreign key(property_id) references Property
+);
+
+create table PublicAmenity(
+    accessibility char(7),
+    amenity_id char(7),
+    amenity_name varchar(20),
+    primary key(accessibility),
+    foreign key(amenity_id) references Amenity
+);
+
+drop table PublicAmenity;
+
+
+create table PrivateAmenity(
+    amenity_id char(7),
+    amenity_name varchar(20),
+    monthly_cost numeric(7,2),
+    primary key(monthly_cost),
+    foreign key(amenity_id) references Amenity
+);
+
+drop table PrivateAmenity;
+
+create table Apartment(
+    apartment_num char(3),
+    apt_size int,
+    bedroom int,
+    bathroom numeric (2,1),
+    property_id char(7),
+    primary key(apartment_num),
+    foreign key(property_id) references Property
+);
+
+drop table Apartment;
+
+create table Tenant(
+    tenant_id char(7),
+    first_name char(20),
+    middle_name char(20),
+    last_name char(20),
+    street_num varchar(10),
+    street_name varchar(20),
+    apt_num varchar(10),
+    state char(20),
+    city char(20),
+    country char(20),
+    zipcode char(10),
+    phone_num varchar(11),
+    age int,
+    credit_score int,
+    has_pet char(3),
+    primary key(tenant_id)
+);
+
+drop table Tenant;
+
+
+create table ProspectiveTenant(
+    visit_id char(7),
+    visit_date DATE,
+    primary key(visit_id)
+);
+
+create table Dependant(
+    tenant_id char(7),
+    dependant_name char(30),
+    foreign key(tenant_id) references Tenant
+);
+
+create table Lease(
+    lease_id char(7),
+    tenant_id char(7),
+    apartment_num char(3),
+    property_id char(7),
+    monthly_rent numeric(6,2),
+    lease_term int,
+    security_deposit numeric(6,2),
+    date_signed DATE,
+    date_expires DATE,
+    primary key(lease_id),
+    foreign key(tenant_id) references Tenant
+);
+
+drop table Lease;
+
+
+create table Payment(
+    invoice_num char(7),
+    lease_id char(7),
+    date_due DATE,
+    date_paid DATE,
+    total_due numeric (8,2),
+    primary key(invoice_num),
+    foreign key(lease_id) references Lease
+);
+
+drop table Payment;
+
+create table PaymentMethod(
+    transaction_id char(7),
+    invoice_num char(7),
+    primary key(transaction_id),
+    foreign key(invoice_num) references Payment
+);
+
+create table Cash(
+    num_hundred_bills int,
+    num_fifty_bills int,
+    num_twenty_bills int,
+    num_ten_bills int,
+    num_five_bills int,
+    num_two_bills int
+);
+
+create table Card(
+    card_num char(12),
+    card_name char(30),
+    expiry char(4)
+);
+
