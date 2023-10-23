@@ -1,17 +1,19 @@
-/* Relational Schemas 22nd Oct*/
+
+javac PopulateData.java 
+java -cp .:ojdbc11.jar PopulateData
+
 
 drop table Property;
 
 create table Property(
-    property_id char(7),
+    property_id char(4),
     name varchar(20),
     street_num varchar(10),
     street_name varchar(20),
-    apt_num varchar(10),
     state char(20),
     city char(20),
     country char(20),
-    zipcode char(10),
+    zipcode char(5),
     primary key(property_id)
 );
 
