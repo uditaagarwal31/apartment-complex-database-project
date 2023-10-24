@@ -10,8 +10,8 @@ create table Property(
     name varchar(20),
     street_num varchar(10),
     street_name varchar(20),
-    state char(20),
     city char(20),
+    state char(20),
     country char(20),
     zipcode char(5),
     primary key(property_id)
@@ -20,13 +20,13 @@ create table Property(
 drop table Amenity;
 
 create table Amenity(
-    amenity_id char(7),
+    amenity_id char(2),
     amenity_name varchar(20),
-    property_id char(7),
-    primary key(amenity_id),
+    property_id char(4),
     foreign key(property_id) references Property
 );
 
+// figure 
 create table PublicAmenity(
     accessibility char(7),
     amenity_id char(7),
@@ -37,7 +37,7 @@ create table PublicAmenity(
 
 drop table PublicAmenity;
 
-
+// figure 
 create table PrivateAmenity(
     amenity_id char(7),
     amenity_name varchar(20),
@@ -53,7 +53,7 @@ create table Apartment(
     apt_size int,
     bedroom int,
     bathroom numeric (2,1),
-    property_id char(7),
+    property_id char(4),
     primary key(apartment_num),
     foreign key(property_id) references Property
 );
@@ -61,15 +61,15 @@ create table Apartment(
 drop table Apartment;
 
 create table Tenant(
-    tenant_id char(7),
+    tenant_id char(5),
     first_name char(20),
     middle_name char(20),
     last_name char(20),
+    apt_num varchar(10),
     street_num varchar(10),
     street_name varchar(20),
-    apt_num varchar(10),
-    state char(20),
     city char(20),
+    state char(20),
     country char(20),
     zipcode char(10),
     phone_num varchar(11),
@@ -79,26 +79,30 @@ create table Tenant(
     primary key(tenant_id)
 );
 
+
 drop table Tenant;
 
 
 create table ProspectiveTenant(
-    visit_id char(7),
+    visit_id char(6),
     visit_date DATE,
     primary key(visit_id)
 );
 
 create table Dependant(
-    tenant_id char(7),
+    tenant_id char(5),
     dependant_name char(30),
     foreign key(tenant_id) references Tenant
 );
 
+
+
+drop table Lease;
+
+
 create table Lease(
     lease_id char(7),
-    tenant_id char(7),
-    apartment_num char(3),
-    property_id char(7),
+    tenant_id char(5),
     monthly_rent numeric(6,2),
     lease_term int,
     security_deposit numeric(6,2),
@@ -106,19 +110,6 @@ create table Lease(
     date_expires DATE,
     primary key(lease_id),
     foreign key(tenant_id) references Tenant
-);
-
-drop table Lease;
-
-
-create table Payment(
-    invoice_num char(7),
-    lease_id char(7),
-    date_due DATE,
-    date_paid DATE,
-    total_due numeric (8,2),
-    primary key(invoice_num),
-    foreign key(lease_id) references Lease
 );
 
 drop table Payment;
@@ -143,5 +134,15 @@ create table Card(
     card_num char(12),
     card_name char(30),
     expiry char(4)
+);
+
+create table Payment(
+    invoice_num char(7),
+    lease_id char(7),
+    date_due DATE,
+    date_paid DATE,
+    total_due numeric (8,2),
+    primary key(invoice_num),
+    foreign key(lease_id) references Lease,
 );
 
