@@ -23,15 +23,14 @@ create table Amenity(
     amenity_id char(2),
     amenity_name varchar(20),
     property_id char(4),
+    primary key(amenity_id),
     foreign key(property_id) references Property
 );
 
 // figure 
 create table PublicAmenity(
     accessibility char(7),
-    amenity_id char(7),
-    amenity_name varchar(20),
-    primary key(accessibility),
+    amenity_id char(2),
     foreign key(amenity_id) references Amenity
 );
 
@@ -40,9 +39,7 @@ drop table PublicAmenity;
 // figure 
 create table PrivateAmenity(
     amenity_id char(7),
-    amenity_name varchar(20),
     monthly_cost numeric(7,2),
-    primary key(monthly_cost),
     foreign key(amenity_id) references Amenity
 );
 
@@ -115,25 +112,29 @@ create table Lease(
 drop table Payment;
 
 create table PaymentMethod(
-    transaction_id char(7),
+    transaction_id char(3),
     invoice_num char(7),
     primary key(transaction_id),
     foreign key(invoice_num) references Payment
 );
 
 create table Cash(
+    transaction_id char(3),
     num_hundred_bills int,
     num_fifty_bills int,
     num_twenty_bills int,
     num_ten_bills int,
     num_five_bills int,
-    num_two_bills int
+    num_two_bills int,
+    foreign key(transaction_id) references PaymentMethod
 );
 
 create table Card(
+    transaction_id char(3),
     card_num char(12),
     card_name char(30),
-    expiry char(4)
+    expiry char(4),
+    foreign key(transaction_id) references PaymentMethod
 );
 
 create table Payment(
@@ -143,6 +144,6 @@ create table Payment(
     date_paid DATE,
     total_due numeric (8,2),
     primary key(invoice_num),
-    foreign key(lease_id) references Lease,
+    foreign key(lease_id) references Lease
 );
 

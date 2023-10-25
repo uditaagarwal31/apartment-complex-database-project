@@ -221,58 +221,58 @@ public class PopulateData {
 
                String[] dependant_names = {"Jai Singh", "Tia Bhatia", "Robby Hamerick", "Wendy Zhung", "Amiya Patel", "David Yuri", "Tammy Sahr", "Shrivats Agarwal"};
               
-                    PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[1]);
-                    preparedStatement1.setString(2, dependant_names[0]);
-                    ResultSet result1 = preparedStatement1.executeQuery();
+                    // PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[1]);
+                    // preparedStatement1.setString(2, dependant_names[0]);
+                    // ResultSet result1 = preparedStatement1.executeQuery();
 
-                    preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[1]);
-                    preparedStatement1.setString(2, dependant_names[1]);
-                    result1 = preparedStatement1.executeQuery();
+                    // preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[1]);
+                    // preparedStatement1.setString(2, dependant_names[1]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                    preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[2]);
-                    preparedStatement1.setString(2, dependant_names[2]);
-                    result1 = preparedStatement1.executeQuery();
+                    // preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[2]);
+                    // preparedStatement1.setString(2, dependant_names[2]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                    preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[3]);
-                    preparedStatement1.setString(2, dependant_names[3]);
-                    result1 = preparedStatement1.executeQuery();
+                    // preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[3]);
+                    // preparedStatement1.setString(2, dependant_names[3]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                    preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[2]);
-                    preparedStatement1.setString(2, dependant_names[4]);
-                    result1 = preparedStatement1.executeQuery();
+                    // preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[2]);
+                    // preparedStatement1.setString(2, dependant_names[4]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                    preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[5]);
-                    preparedStatement1.setString(2, dependant_names[5]);
-                    result1 = preparedStatement1.executeQuery();
+                    // preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[5]);
+                    // preparedStatement1.setString(2, dependant_names[5]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                    preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[6]);
-                    preparedStatement1.setString(2, dependant_names[6]);
-                    result1 = preparedStatement1.executeQuery();
+                    // preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[6]);
+                    // preparedStatement1.setString(2, dependant_names[6]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                     preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
-                    + " values (?, ?)");
-                    preparedStatement1.setString(1, tenant_id[6]);
-                    preparedStatement1.setString(2, dependant_names[7]);
-                    result1 = preparedStatement1.executeQuery();
+                    //  preparedStatement1 = conn.prepareStatement("INSERT into Dependant (tenant_id, dependant_name)"
+                    // + " values (?, ?)");
+                    // preparedStatement1.setString(1, tenant_id[6]);
+                    // preparedStatement1.setString(2, dependant_names[7]);
+                    // result1 = preparedStatement1.executeQuery();
 
-                    result1.close();                      
-                    preparedStatement1.close();
+                    // result1.close();                      
+                    // preparedStatement1.close();
 
-                   // String[] lease_ids = {"8904732", "5619285", "3472156", "6928740", "1237894", "8756291", "4569012", "2345678", "9870432"};
+                    String[] lease_ids = {"8904732", "5619285", "3472156", "6928740", "1237894", "8756291", "4569012", "2345678", "9870432"};
                     // double[] monthly_rent = {2468, 3985, 2876, 4132, 4679, 3621, 1999, 3555, 4723};
                     // int lease_term = 12;
                     // double[] security_deposit = {4936, 7970, 5752, 8264, 9358, 7242, 3998, 7110, 9446};
@@ -294,6 +294,87 @@ public class PopulateData {
                     //     preparedStatement1.close();
                     // }
 
+                    // populate Payment
+                    String[] invoice_nums = {"7854321", "9867543", "1234567", "5678901", "3456789", "6543210", "8765432", "4725432", "1765412"};
+                    String[] dates_due = {"14-Feb-2022", "05-Sep-2021", "28-Nov-2020", "19-Jul-2019", "03-Apr-2022", "22-Oct-2021", "11-May-2020", "20-Oct-2021", "01-May-2020"};
+                    String[] dates_paid = {"12-Feb-2022", "04-Sep-2021", "28-Nov-2020", "19-Jul-2019", "01-Apr-2022", "21-Oct-2021", "11-May-2020", "20-Oct-2021", "02-May-2020"};
+                    double[] total_due = {3678, 2465, 4192, 3027, 4789, 2856, 3921, 3846, 4921};
+                    // for(int i = 0; i < invoice_nums.length; i++){
+                    //     PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into Payment (invoice_num, lease_id, date_due, date_paid, total_due)"
+                    //     + " values (?, ?, ?, ?, ?)");
+                    //     preparedStatement1.setString(1, invoice_nums[i]);
+                    //     preparedStatement1.setString(2, lease_ids[i]);
+                    //     preparedStatement1.setString(3, dates_due[i]);
+                    //     preparedStatement1.setString(4, dates_paid[i]);
+                    //     preparedStatement1.setDouble(5, total_due[i]);
+                
+                    //     ResultSet result1 = preparedStatement1.executeQuery();
+                    //     result1.close();                      
+                    //     preparedStatement1.close();
+                    // }
+
+                    // populate payment methods
+                    String[] transaction_ids = {"437", "589", "321", "754", "168", "926", "843", "295", "672"};
+                    // for(int i = 0; i < invoice_nums.length; i++){
+                    //     PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into PaymentMethod (transaction_id, invoice_num)"
+                    //     + " values (?, ?)");
+                    //     preparedStatement1.setString(1, transaction_ids[i]);
+                    //     preparedStatement1.setString(2, invoice_nums[i]);                
+                    //     ResultSet result1 = preparedStatement1.executeQuery();
+                    //     result1.close();                      
+                    //     preparedStatement1.close();
+                    // }
+
+                   
+                    // PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into Cash (transaction_id, num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills)"
+                    // + " values (?, ?, ?, ?, ?, ?, ?)");
+                    // preparedStatement1.setString(1, transaction_ids[1]);
+                    // preparedStatement1.setInt(2, 24); 
+                    // preparedStatement1.setInt(3, 0);   
+                    // preparedStatement1.setInt(4, 0);   
+                    // preparedStatement1.setInt(5, 10);   
+                    // preparedStatement1.setInt(6, 0); 
+                    // preparedStatement1.setInt(7, 0);                    
+                    // ResultSet result1 = preparedStatement1.executeQuery();
+                    // result1.close();                      
+                    // preparedStatement1.close();
+
+                    String[] card_nums = {"548712963014", "937826451039", "265874193020", "408712549362", "183467295810", "795432186724", "619385724039"};
+                    String[] expiry = {"3267", "9841", "5728", "1395", "6702", "2458", "7189"};
+                    String[] card_names = {"Bella Hadid", "Udita Agarwal", "Tara Sukumar", "Shrivats Agarwal", "Mo Hilton", "Priya Grace", "Elisa Kapoor"};
+                    //   for(int i = 0; i < card_nums.length; i++){
+                    //     PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into Card (transaction_id, card_num, card_name, expiry)"
+                    //     + " values (?, ?, ?,?)");
+                    //     preparedStatement1.setString(1, transaction_ids[i+2]);
+                    //     preparedStatement1.setString(2, card_nums[i]);    
+                    //     preparedStatement1.setString(3, card_names[i]);  
+                    //     preparedStatement1.setString(4, expiry[i]);              
+                    //     ResultSet result1 = preparedStatement1.executeQuery();
+                    //     result1.close();                      
+                    //     preparedStatement1.close();
+                    // }
+
+                    // String[] accessibility = {"24/7", "24/7", "24/7", "24/7", "7/3", "24/7", "24/7"};
+                    //   for(int i = 0; i < 7; i++){
+                    //     PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into PublicAmenity (accessibility, amenity_id)"
+                    //     + " values (?, ?)");
+                    //     preparedStatement1.setString(1, accessibility[i]);
+                    //     preparedStatement1.setString(2, amenity_ids[i]);                 
+                    //     ResultSet result1 = preparedStatement1.executeQuery();
+                    //     result1.close();                      
+                    //     preparedStatement1.close();
+                    // }
+
+                     double[] monthly_cost = {200, 400, 1000};
+                      for(int i = 0; i < monthly_cost.length; i++){
+                        PreparedStatement preparedStatement1 = conn.prepareStatement("INSERT into PrivateAmenity (amenity_id, monthly_cost)"
+                        + " values (?, ?)");
+                        preparedStatement1.setString(1, amenity_ids[i+7]);
+                        preparedStatement1.setDouble(2, monthly_cost[i]);                 
+                        ResultSet result1 = preparedStatement1.executeQuery();
+                        result1.close();                      
+                        preparedStatement1.close();
+                    }
 
                 conn.close();
             } catch(SQLException se){
