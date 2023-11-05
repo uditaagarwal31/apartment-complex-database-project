@@ -2,122 +2,211 @@
 javac PopulateData.java 
 java -cp .:ojdbc11.jar PopulateData
 
-
+PROPERTY 
 drop table Property;
-
+select * from Property;
 create table Property(
-    property_id char(4),
+    property_id char(2),
     name varchar(20),
-    street_num varchar(10),
-    street_name varchar(20),
+    address varchar(30),
     city char(20),
     state char(20),
     country char(20),
     zipcode char(5),
     primary key(property_id)
 );
+insert into Property (property_id, name, address, city, state, country, zipcode) values (1, 'Eastside Commons', '77571 Memorial Avenue', 'Los Angeles', 'California', 'United States', '90020');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (2, 'Oasis Lofts', '8 Straubel Avenue', 'Falls Church', 'Virginia', 'United States', '22047');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (3, 'Riverfront Lofts', '7758 Debs Parkway', 'San Diego', 'California', 'United States', '92186');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (4, 'Sunset Terrace', '6 Dahle Street', 'Lansing', 'Michigan', 'United States', '48930');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (5, 'Joyful Apartments', '78890 Everett Avenue', 'Washington', 'District of Columbia', 'United States', '20520');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (6, 'Serenity Commons', '76 Shelley Point', 'Miami', 'Florida', 'United States', '33261');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (7, 'Beach Bum', '5 Pawling Drive', 'Mesquite', 'Texas', 'United States', '75185');
+insert into Property (property_id, name, address, city, state, country, zipcode) values (8, 'Lakeside Heaven', '27 Meadow Ridge Terrace', 'Fort Lauderdale', 'Florida', 'United States', '33310');
 
+
+AMENITY
 drop table Amenity;
-
+select * from Amenity;
 create table Amenity(
     amenity_id char(2),
     amenity_name varchar(20),
-    property_id char(4),
-    primary key(amenity_id),
-    foreign key(property_id) references Property
+    primary key(amenity_id)
 );
+insert into Amenity (amenity_id, amenity_name) values (1, 'Swimming Pool');
+insert into Amenity (amenity_id, amenity_name) values (2, 'Gym');
+insert into Amenity (amenity_id, amenity_name) values (3, 'Vending Machine');
+insert into Amenity (amenity_id, amenity_name) values (4, 'Sauna');
+insert into Amenity (amenity_id, amenity_name) values (5, 'Cafe');
+insert into Amenity (amenity_id, amenity_name) values (6, 'Parking');
+insert into Amenity (amenity_id, amenity_name) values (7, 'Office Space');
+insert into Amenity (amenity_id, amenity_name) values (8, 'Pet Walker');
+insert into Amenity (amenity_id, amenity_name) values (9, 'Cleaning');
+insert into Amenity (amenity_id, amenity_name) values (10, 'Babysitting');
 
-// figure 
+
+PUBLIC AMENITY
 create table PublicAmenity(
-    accessibility char(7),
     amenity_id char(2),
+    accessibility char(7),
     foreign key(amenity_id) references Amenity
 );
+insert into PublicAmenity (amenity_id, accessibility) values (1, '24/7');
+insert into PublicAmenity (amenity_id, accessibility) values (2, '24/7');
+insert into PublicAmenity (amenity_id, accessibility) values (3, '24/7');
+insert into PublicAmenity (amenity_id, accessibility) values (4, '7/3');
+insert into PublicAmenity (amenity_id, accessibility) values (6, '24/7');
+insert into PublicAmenity (amenity_id, accessibility) values (7, '24/7');
 
-drop table PublicAmenity;
 
-// figure 
+PRIVATE AMENITY 
 create table PrivateAmenity(
-    amenity_id char(7),
+    amenity_id char(2),
     monthly_cost numeric(7,2),
     foreign key(amenity_id) references Amenity
 );
-
 drop table PrivateAmenity;
+insert into PrivateAmenity (amenity_id, monthly_cost) values (8, '200');
+insert into PrivateAmenity (amenity_id, monthly_cost) values (9, '400');
+insert into PrivateAmenity (amenity_id, monthly_cost) values (10, '600');
 
+
+APARTMENT
 create table Apartment(
     apartment_num char(3),
     apt_size int,
     bedroom int,
     bathroom numeric (2,1),
-    property_id char(4),
+    property_id char(2),
     primary key(apartment_num),
     foreign key(property_id) references Property
 );
-
 drop table Apartment;
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id) values ('838', 1200, 1, 1, 8);
 
+
+TENANT
 create table Tenant(
-    tenant_id char(5),
+    tenant_id char(2),
     first_name char(20),
     middle_name char(20),
     last_name char(20),
-    apt_num varchar(10),
-    street_num varchar(10),
-    street_name varchar(20),
+    address varchar(30),
     city char(20),
     state char(20),
     country char(20),
-    zipcode char(10),
+    zipcode char(5),
     phone_num varchar(11),
+    email char(30),
     age int,
+    gender char(20),
     credit_score int,
     has_pet char(3),
     primary key(tenant_id)
 );
 
-
 drop table Tenant;
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (1, 'Hamlen', 'Rubenchik', 'Dach', '5878 Wayridge Alley', 'Mobile', 'Alabama', 'United States', '36670', '3553131071', 'hdach0@imageshack.us', 92, 'Male', 773, 'yes');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (2, 'Christye', 'Aucutt', 'Culpin', '6 Lerdahl Pass', 'Macon', 'Georgia', 'United States', '31296', '3037346124', 'cculpin1@networksolutions.com', 94, 'Polygender', 561, 'yes');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (3, 'Andres', 'Liversage', 'Getcliffe', '571 Grim Point', 'Canton', 'Ohio', 'United States', '44705', '6706153303', 'agetcliffe2@sun.com', 30, 'Male', 542, 'yes');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (4, 'Damara', 'Bummfrey', 'Follin', '74 Meadow Ridge Road', 'Houston', 'Texas', 'United States', '77035', '9932576069', 'dfollin3@reverbnation.com', 58, 'Female', 652, 'yes');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (5, 'Eve', 'Hillock', 'Whoolehan', '58250 Nevada Drive', 'Paterson', 'New Jersey', 'United States', '07544', '7113625983', 'ewhoolehan4@cloudflare.com', 100, 'Female', 695, 'no');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (6, 'Mycah', 'Willowby', 'Kamenar', '44 Twin Pines Avenue', 'Wichita', 'Kansas', 'United States', '67260', '8850138784', 'mkamenar5@pcworld.com', 20, 'Male', 619, 'no');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (7, 'Bethina', 'Costy', 'Sneezem', '43 Anderson Circle', 'Salt Lake City', 'Utah', 'United States', '84145', '9627533785', 'bsneezem6@comsenz.com', 34, 'Female', 761, 'no');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (8, 'Stacie', 'Hurnell', 'Cradduck', '7636 Annamark Avenue', 'York', 'Pennsylvania', 'United States', '17405', '5917216827', 'scradduck7@epa.gov', 19, 'Female', 698, 'no');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (9, 'Allx', 'Semmens', 'Drohun', '12378 Thompson Alley', 'Honolulu', 'Hawaii', 'United States', '96820', '2095676505', 'adrohun8@github.com', 86, 'Female', 767, 'no');
+insert into Tenant (tenant_id, first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (10, 'Milo', 'Traves', 'Paolinelli', '37 Golf Parkway', 'Boston', 'Massachusetts', 'United States', '02163', '2757842560', 'mpaolinelli9@webs.com', 90, 'Male', 757, 'no');
+select * from Tenant;
 
 
+PROSPECTIVE TENANT
 create table ProspectiveTenant(
-    visit_id char(6),
+    visit_id char(2),
     visit_date DATE,
     primary key(visit_id)
 );
+insert into ProspectiveTenant (visit_id, visit_date) values (1, '25-Jan-2023');
+insert into ProspectiveTenant (visit_id, visit_date) values (2, '12-Sep-2022');
+insert into ProspectiveTenant (visit_id, visit_date) values (3, '07-Nov-2020');
+insert into ProspectiveTenant (visit_id, visit_date) values (4, '18-May-2021');
+insert into ProspectiveTenant (visit_id, visit_date) values (5, '02-Aug-2023');
+insert into ProspectiveTenant (visit_id, visit_date) values (6, '14-Oct-2020');
+insert into ProspectiveTenant (visit_id, visit_date) values (7, '30-Jul-2022');
+insert into ProspectiveTenant (visit_id, visit_date) values (8, '09-Apr-2021');
+insert into ProspectiveTenant (visit_id, visit_date) values (9, '23-Jun-2023');
 
+DEPENDANT
 create table Dependant(
-    tenant_id char(5),
-    dependant_name char(30),
+    tenant_id char(2),
+    first_name char(20),
+    last_name char(20),
     foreign key(tenant_id) references Tenant
 );
+select * from Dependant;
+insert into Dependant (tenant_id, first_name, last_name) values (1, 'Mira', 'Kapur');
+insert into Dependant (tenant_id, first_name, last_name) values (1, 'Jai', 'Kapur');
+insert into Dependant (tenant_id, first_name, last_name) values (4, 'Udita', 'Agarwal');
+insert into Dependant (tenant_id, first_name, last_name) values (7, 'Elizabeth', 'Wang');
+insert into Dependant (tenant_id, first_name, last_name) values (7, 'Carter', 'Wang');
 
 
-
-drop table Lease;
-
-
+LEASE
 create table Lease(
-    lease_id char(7),
-    tenant_id char(5),
+    lease_id char(3),
+    tenant_id char(2),
     monthly_rent numeric(6,2),
     lease_term int,
     security_deposit numeric(6,2),
     date_signed DATE,
     date_expires DATE,
-    primary key(lease_id),
-    foreign key(tenant_id) references Tenant
+    primary key(lease_id)
 );
+insert into Lease (lease_id, monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (100,  2468,12, 4936, '18-Jul-2021', '18-Jul-2022');
+insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (101,  4468,12, 6936, '09-Jun-2020', '09-Jun-2021');
+insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (102,  6468,12, 8936, '01-Sep-2021', '01-Sep-2022');
+insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (103,  2468,12, 4936, '19-Oct-2021', '19-Oct-2022');
+insert into Lease (lease_id, monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (104,  5468,12, 8936, '08-Nov-2022', '08-Nov-2023');
+insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (105,  1468,12, 3936, '18-May-2021', '18-May-2022');
+insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (106, 3468,12, 6936, '09-Dec-2020', '09-Dec-2021');
 
+
+
+PAYMENT
 drop table Payment;
+create table Payment(
+    invoice_num char(2),
+    lease_id char(3),
+    date_due DATE,
+    date_paid DATE,
+    total_due numeric (8,2),
+    primary key(invoice_num),
+    foreign key(lease_id) references Lease
+);
+insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (1, 100, '14-Feb-2021', '12-Feb-2021', 3678);
+insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (2, 101, '05-Sep-2021', '04-Sep-2021', 2465);
+insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (3, 101, '28-Nov-2020', '28-Nov-2020', 4192);
+insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (4, 104, '19-Jul-2019', '21-Jul-2019', 3092);
+insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (5, 105, '03-Apr-2022', '01-Apr-2022', 2856);
+insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (6, 106, '11-May-2020', '13-May-2020', 5856);
+select * from payment;
 
+
+PAYMENT METHOD
 create table PaymentMethod(
     transaction_id char(3),
-    invoice_num char(7),
+    invoice_num char(2),
     primary key(transaction_id),
     foreign key(invoice_num) references Payment
 );
+insert into PaymentMethod (transaction_id ,invoice_num) values ('200', 1);
+insert into PaymentMethod (transaction_id ,invoice_num) values ('201', 2);
+insert into PaymentMethod (transaction_id ,invoice_num) values ('202', 3);
+insert into PaymentMethod (transaction_id ,invoice_num) values ('203', 4);
+insert into PaymentMethod (transaction_id ,invoice_num) values ('204', 5);
+insert into PaymentMethod (transaction_id ,invoice_num) values ('205', 6);
 
+
+CASH
 create table Cash(
     transaction_id char(3),
     num_hundred_bills int,
@@ -129,6 +218,12 @@ create table Cash(
     foreign key(transaction_id) references PaymentMethod
 );
 
+insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values ('200', 30, 0, 0, 0, 0, 0);
+insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values ('201', 24, 0, 0, 0, 0, 0);
+insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values ('202', 41, 1, 2, 0, 0, 1);
+
+
+CARD
 create table Card(
     transaction_id char(3),
     card_num char(12),
@@ -136,14 +231,21 @@ create table Card(
     expiry char(4),
     foreign key(transaction_id) references PaymentMethod
 );
+insert into Card (transaction_id ,card_num, card_name, expiry) values ('203', '548712963014', 'Bella Hadid','3267');
+insert into Card (transaction_id ,card_num, card_name, expiry) values ('204', '937826451039', 'Udita Agarwal','5728');
+insert into Card (transaction_id ,card_num, card_name, expiry) values ('205', '265874193020', 'Tara Sukumar','7189');
 
-create table Payment(
-    invoice_num char(7),
-    lease_id char(7),
-    date_due DATE,
-    date_paid DATE,
-    total_due numeric (8,2),
-    primary key(invoice_num),
-    foreign key(lease_id) references Lease
+
+create table has_lease(
+    lease_id char(3),
+    tenant_id char(2),
+    foreign key(lease_id) references Lease,
+    foreign key(tenant_id) references Tenant
 );
-
+insert into has_lease (lease_id ,tenant_id) values ('100', '1');
+insert into has_lease (lease_id ,tenant_id) values ('101', '2');
+insert into has_lease (lease_id ,tenant_id) values ('102', '3');
+insert into has_lease (lease_id ,tenant_id) values ('103', '4');
+insert into has_lease (lease_id ,tenant_id) values ('104', '5');
+insert into has_lease (lease_id ,tenant_id) values ('105', '6');
+insert into has_lease (lease_id ,tenant_id) values ('106', '7');
