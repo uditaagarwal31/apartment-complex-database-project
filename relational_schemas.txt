@@ -78,11 +78,19 @@ create table Apartment(
     bedroom int,
     bathroom numeric (2,1),
     property_id char(2),
+    lease_id number(2),
     primary key(apartment_num),
-    foreign key(property_id) references Property
+    foreign key(property_id) references Property,
+    foreign key(lease_id) references Lease
 );
 drop table Apartment;
-insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id) values ('838', 1200, 1, 1, 8);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('838', 1200, 1, 1, 8, 1);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('516', 1000, 1, 1, 1, 2);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('416', 1200, 2, 1, 2, 3);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('312', 1800, 4, 2, 3, 4);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('213', 1400, 3, 2, 4, 5);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('319', 1000, 1, 1, 5, 6);
+insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('216', 1300, 1, 1, 6, 7);
 
 
 TENANT
@@ -158,21 +166,24 @@ insert into Dependant (tenant_id, first_name, last_name) values (7, 'Carter', 'W
 
 LEASE
 create table Lease(
-    lease_id char(3),
+    lease_id number(2) generated always as identity,
     monthly_rent numeric(6,2),
     lease_term int,
     security_deposit numeric(6,2),
     date_signed DATE,
     date_expires DATE,
+    date_move_out DATE,
     primary key(lease_id)
 );
-insert into Lease (lease_id, monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (100,  2468,12, 4936, '18-Jul-2021', '18-Jul-2022');
-insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (101,  4468,12, 6936, '09-Jun-2020', '09-Jun-2021');
-insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (102,  6468,12, 8936, '01-Sep-2021', '01-Sep-2022');
-insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (103,  2468,12, 4936, '19-Oct-2021', '19-Oct-2022');
-insert into Lease (lease_id, monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (104,  5468,12, 8936, '08-Nov-2022', '08-Nov-2023');
-insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (105,  1468,12, 3936, '18-May-2021', '18-May-2022');
-insert into Lease (lease_id,  monthly_rent, lease_term, security_deposit, date_signed, date_expires) values (106, 3468,12, 6936, '09-Dec-2020', '09-Dec-2021');
+
+
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (2468,12, 4936, '18-Jul-2021', '18-Jul-2022', '18-Jul-2022');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (4468,12, 6936, '09-Jun-2020', '09-Jun-2021', '07-Jun-2021');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (6468,12, 8936, '01-Sep-2021', '01-Sep-2022', '31-Jul-2022');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (2468,12, 4936, '19-Oct-2021', '19-Oct-2022', '16-Oct-2022');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (5468,12, 8936, '08-Nov-2022', '08-Nov-2023', '04-Nov-2023');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (1468,12, 3936, '18-May-2021', '18-May-2022', '18-May-2022');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (3468,12, 6936, '09-Dec-2020', '09-Dec-2021', '08-Dec-2021');
 
 
 
@@ -242,15 +253,15 @@ insert into Card (transaction_id ,card_num, card_name, expiry) values ('205', '2
 
 
 create table has_lease(
-    lease_id char(3),
+    lease_id number(2),
     tenant_id number(2),
     foreign key(lease_id) references Lease,
     foreign key(tenant_id) references Tenant
 );
-insert into has_lease (lease_id ,tenant_id) values ('100', '1');
-insert into has_lease (lease_id ,tenant_id) values ('101', '2');
-insert into has_lease (lease_id ,tenant_id) values ('102', '3');
-insert into has_lease (lease_id ,tenant_id) values ('103', '4');
-insert into has_lease (lease_id ,tenant_id) values ('104', '5');
-insert into has_lease (lease_id ,tenant_id) values ('105', '6');
-insert into has_lease (lease_id ,tenant_id) values ('106', '7');
+insert into has_lease (lease_id ,tenant_id) values ('7', '1');
+insert into has_lease (lease_id ,tenant_id) values ('6', '2');
+insert into has_lease (lease_id ,tenant_id) values ('5', '3');
+insert into has_lease (lease_id ,tenant_id) values ('4', '4');
+insert into has_lease (lease_id ,tenant_id) values ('3', '5');
+insert into has_lease (lease_id ,tenant_id) values ('2', '6');
+insert into has_lease (lease_id ,tenant_id) values ('1', '7');
