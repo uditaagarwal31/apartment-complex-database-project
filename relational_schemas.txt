@@ -95,7 +95,7 @@ insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, 
 
 TENANT
 create table Tenant(
-    tenant_id char(2) generated always as identity,
+    tenant_id number(2) generated always as identity,
     first_name char(20),
     middle_name char(20),
     last_name char(20),
@@ -190,41 +190,41 @@ insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date
 PAYMENT
 drop table Payment;
 create table Payment(
-    invoice_num char(2),
-    lease_id char(3),
+    invoice_num number(2) generated always as identity,
+    lease_id number(2),
     date_due DATE,
     date_paid DATE,
     total_due numeric (8,2),
     primary key(invoice_num),
     foreign key(lease_id) references Lease
 );
-insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (1, 100, '14-Feb-2021', '12-Feb-2021', 3678);
-insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (2, 101, '05-Sep-2021', '04-Sep-2021', 2465);
-insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (3, 101, '28-Nov-2020', '28-Nov-2020', 4192);
-insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (4, 104, '19-Jul-2019', '21-Jul-2019', 3092);
-insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (5, 105, '03-Apr-2022', '01-Apr-2022', 2856);
-insert into Payment (invoice_num, lease_id, date_due, date_paid, total_due) values (6, 106, '11-May-2020', '13-May-2020', 5856);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (1, '14-Feb-2021', '12-Feb-2021', 3678);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (2, '05-Sep-2021', '04-Sep-2021', 2465);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (3, '28-Nov-2020', '28-Nov-2020', 4192);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (4, '19-Jul-2019', '21-Jul-2019', 3092);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (5, '03-Apr-2022', '01-Apr-2022', 2856);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (6, '11-May-2020', '13-May-2020', 5856);
 select * from payment;
 
 
 PAYMENT METHOD
 create table PaymentMethod(
-    transaction_id char(3),
-    invoice_num char(2),
+    transaction_id number(2) generated always as identity,
+    invoice_num number(2),
     primary key(transaction_id),
     foreign key(invoice_num) references Payment
 );
-insert into PaymentMethod (transaction_id ,invoice_num) values ('200', 1);
-insert into PaymentMethod (transaction_id ,invoice_num) values ('201', 2);
-insert into PaymentMethod (transaction_id ,invoice_num) values ('202', 3);
-insert into PaymentMethod (transaction_id ,invoice_num) values ('203', 4);
-insert into PaymentMethod (transaction_id ,invoice_num) values ('204', 5);
-insert into PaymentMethod (transaction_id ,invoice_num) values ('205', 6);
+insert into PaymentMethod (invoice_num) values (8);
+insert into PaymentMethod (invoice_num) values (7);
+insert into PaymentMethod (invoice_num) values (6);
+insert into PaymentMethod (invoice_num) values (5);
+insert into PaymentMethod (invoice_num) values (3);
+insert into PaymentMethod (invoice_num) values (2);
 
 
 CASH
 create table Cash(
-    transaction_id char(3),
+    transaction_id number(2),
     num_hundred_bills int,
     num_fifty_bills int,
     num_twenty_bills int,
@@ -234,22 +234,23 @@ create table Cash(
     foreign key(transaction_id) references PaymentMethod
 );
 
-insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values ('200', 30, 0, 0, 0, 0, 0);
-insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values ('201', 24, 0, 0, 0, 0, 0);
-insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values ('202', 41, 1, 2, 0, 0, 1);
-
+insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values (1, 30, 0, 0, 0, 0, 0);
+insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values (2, 24, 0, 0, 0, 0, 0);
+insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values (3, 41, 1, 2, 0, 0, 1);
 
 CARD
 create table Card(
-    transaction_id char(3),
+    transaction_id number(2),
     card_num char(12),
     card_name char(30),
     expiry char(4),
     foreign key(transaction_id) references PaymentMethod
 );
-insert into Card (transaction_id ,card_num, card_name, expiry) values ('203', '548712963014', 'Bella Hadid','3267');
-insert into Card (transaction_id ,card_num, card_name, expiry) values ('204', '937826451039', 'Udita Agarwal','5728');
-insert into Card (transaction_id ,card_num, card_name, expiry) values ('205', '265874193020', 'Tara Sukumar','7189');
+
+insert into Card (transaction_id ,card_num, card_name, expiry) values (7, '548712963014', 'Bella Hadid','3267');
+insert into Card (transaction_id ,card_num, card_name, expiry) values (5, '937826451039', 'Udita Agarwal','5728');
+insert into Card (transaction_id ,card_num, card_name, expiry) values (6, '265874193020', 'Tara Sukumar','7189');
+
 
 
 create table has_lease(
