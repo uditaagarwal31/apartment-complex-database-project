@@ -7,10 +7,13 @@ public class PopulateData {
 
     // OH QUESTIONS
     // 1. tenant select prepared statement not working for record visitor data & add dependant
-    // 2. what exactly do you mean by record lease data?
-    // 3. is it okay if i don't consider pets as tenants?
-    // 4. is record move out done correctly?
-    // 5. i'm not really using amenities here 
+    // 2. what exactly do you mean by record lease data? show the available apartments such as 2 bedroom, etc and the property manager can choose
+    // in record moveout do i just drop that row containing that lease_id from apartment - no don't drop
+    // 3. is it okay if i don't consider pets as tenants? yes 
+    // 4. i'm not really using amenities here 
+    // property manager can add amenities. you list existing ones & can add. for tenant tenant can add private amenities 
+
+
     public static void main(String[] args){
         Connection conn = null;
         Scanner scan = new Scanner(System.in);
@@ -70,7 +73,7 @@ public class PopulateData {
         Scanner scan = new Scanner(System.in);
         
         while(true){
-            System.out.println("Hi property manager!\n Choose the task you want to accomplish today \n 1 - Record visitor data \n 2 - Record lease data \n 3 - Record move out \n 4 - Add dependant to a lease \n 5- Set move-out date");
+            System.out.println("Hi property manager!\n Choose the task you want to accomplish today \n 1 - Record visitor data \n 2 - Record lease data \n 3 - Set move-out date \n 4 - Add dependant to a lease \n ");
             try{
                 if(scan.hasNextInt()){
                     option = scan.nextInt();
@@ -80,12 +83,10 @@ public class PopulateData {
                         } else if (option == 2){
                             recordLeaseData(conn);
                         } else if (option == 3){
-                            recordMoveOut(conn);
+                            set_move_out_date(conn);
                         } else if(option == 4){
                             addDependant(conn);
-                        } else if (option == 5){
-                            set_move_out_date(conn);
-                        }
+                        } 
                     }
                  //   System.out.println("Please enter a valid integer number between 1 and 5");
                 }
@@ -142,6 +143,7 @@ public class PopulateData {
         }
     }
 
+
     public static void recordVistorData(Connection conn){
         Scanner scan = new Scanner(System.in);
 
@@ -188,55 +190,48 @@ public class PopulateData {
 
         System.out.println("Input yes or no if the prospective tenant has a pet or not");
         String has_pet = scan.nextLine();
-
+        int tenant_id = 0;
+        String generatedColumns[] = { "tenant_id" };
         try{
             // TO DO: ERROR HANDLING 
-            PreparedStatement preparedStatement1 = conn.prepareStatement("Insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement1.setString(1, first_name);
-            preparedStatement1.setString(2, middle_name);
-            preparedStatement1.setString(3, last_name);
-            preparedStatement1.setString(4, address);
-            preparedStatement1.setString(5, city);
-            preparedStatement1.setString(6, state);
-            preparedStatement1.setString(7, country);
-            preparedStatement1.setString(8, zipcode);
-            preparedStatement1.setString(9, phone_number);
-            preparedStatement1.setString(10, email);
-            preparedStatement1.setInt(11, age);
-            preparedStatement1.setString(12, gender);
-            preparedStatement1.setInt(13, credit_score);
-            preparedStatement1.setString(14, has_pet);
-            preparedStatement1.executeUpdate();                   
-            preparedStatement1.close();
+            PreparedStatement insert_tenant = conn.prepareStatement("Insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", generatedColumns);
+            insert_tenant.setString(1, first_name);
+            insert_tenant.setString(2, middle_name);
+            insert_tenant.setString(3, last_name);
+            insert_tenant.setString(4, address);
+            insert_tenant.setString(5, city);
+            insert_tenant.setString(6, state);
+            insert_tenant.setString(7, country);
+            insert_tenant.setString(8, zipcode);
+            insert_tenant.setString(9, phone_number);
+            insert_tenant.setString(10, email);
+            insert_tenant.setInt(11, age);
+            insert_tenant.setString(12, gender);
+            insert_tenant.setInt(13, credit_score);
+            insert_tenant.setString(14, has_pet);
+            insert_tenant.executeUpdate();                   
+            
+            try{
+                ResultSet generatedKeys = insert_tenant.getGeneratedKeys();
+                if(generatedKeys.next()){
+                    tenant_id = generatedKeys.getInt(1);
+                }
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
+            insert_tenant.close();
         } catch(SQLException se){
             se.printStackTrace();
         }
 
         System.out.println("Input visit date in the form DD-MMM-YYYY: ");
         String date = scan.nextLine();
-        try{
-            // TO DO: ERROR HANDLING 
-            // OH: THIS QUERY WORKS IN SQL BUT NOT HERE WHY ??
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT tenant_id from Tenant where first_name = ? AND last_name = ? AND address = ? AND phone_num = ?");
-        // PreparedStatement preparedStatement = conn.prepareStatement("SELECT * from Tenant"); // OH: THIS WORKS! BUT ABOVE DOESN'T 
-            preparedStatement.setString(1, first_name);
-            preparedStatement.setString(2, last_name);
-            preparedStatement.setString(3, address);
-            preparedStatement.setString(4, phone_number);
-            ResultSet rs = preparedStatement.executeQuery();
-            int tenant_id = 0;
-            System.out.println("outside while loop before");
-            while(rs.next()){
-                System.out.println("inside while loop");
-                tenant_id = rs.getInt("tenant_id"); 
-                System.out.println(tenant_id + "tenant_id");
-            }
-            System.out.println("after while loop before");
-            PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into ProspectiveTenant (tenant_id, visit_date) values (?,?)");
-            preparedStatement2.setInt(1, tenant_id);
-            preparedStatement2.setString(2, date);
-            preparedStatement2.executeUpdate();                   
-            preparedStatement2.close();
+        try{ 
+            PreparedStatement insert_prospective_tenant = conn.prepareStatement("Insert into ProspectiveTenant (tenant_id, visit_date) values (?,?)");
+            insert_prospective_tenant.setInt(1, tenant_id);
+            insert_prospective_tenant.setString(2, date);
+            insert_prospective_tenant.executeUpdate();                   
+            insert_prospective_tenant.close();
         } catch(SQLException se){
             se.printStackTrace();
         }
@@ -266,18 +261,28 @@ public class PopulateData {
 
         System.out.println("Input move-out date if any in the form DD-MMM-YYYY: "); // OH: WHAT TO DO HERE?
         String date_move_out = scan.nextLine();       
-
+        String generatedColumns[] = { "lease_id" };
+        int lease_id = 0;
         try{
             // TO DO: ERROR HANDLING 
-            PreparedStatement preparedStatement1 = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, ?, ?, ?)");
-            preparedStatement1.setDouble(1, rent);
-            preparedStatement1.setInt(2, lease_term);
-            preparedStatement1.setDouble(3, security_deposit);
-            preparedStatement1.setString(4, date_signed);
-            preparedStatement1.setString(5, date_expires);
-            preparedStatement1.setString(6, date_move_out);
-            preparedStatement1.executeUpdate();                   
-            preparedStatement1.close();
+            PreparedStatement insert_lease = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, ?, ?, ?)", generatedColumns);
+            insert_lease.setDouble(1, rent);
+            insert_lease.setInt(2, lease_term);
+            insert_lease.setDouble(3, security_deposit);
+            insert_lease.setString(4, date_signed);
+            insert_lease.setString(5, date_expires);
+            insert_lease.setString(6, date_move_out);
+            insert_lease.executeUpdate();
+             try{
+                ResultSet generatedKeys = insert_lease.getGeneratedKeys();
+                if(generatedKeys.next()){
+                    lease_id = generatedKeys.getInt(1);
+                    System.out.println("lease_id here" + lease_id);
+                }
+            } catch(SQLException se){
+                se.printStackTrace();
+            }                   
+            insert_lease.close();
         } catch(SQLException se){
             se.printStackTrace();
         }
@@ -302,9 +307,9 @@ public class PopulateData {
         String property_name = scan.nextLine();
         int property_id = 0;
         try{
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT property_id from Property where name = ?");
-            preparedStatement.setString(1, property_name);
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement get_property_id = conn.prepareStatement("SELECT property_id from Property where name = ?");
+            get_property_id.setString(1, property_name);
+            ResultSet rs = get_property_id.executeQuery();
             while (rs.next()) {
                 property_id = rs.getInt("property_id");
             }
@@ -312,22 +317,6 @@ public class PopulateData {
             se.printStackTrace();
         }
 
-        // gets lease_id
-        int lease_id = 0;
-        try{
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT lease_id from Lease where monthly_rent = ? AND lease_term = ? AND security_deposit = ? AND date_signed = ? AND date_expires = ?");
-            preparedStatement.setDouble(1, rent);
-            preparedStatement.setInt(2, lease_term);
-            preparedStatement.setDouble(3, security_deposit);
-            preparedStatement.setString(4, date_signed);
-            preparedStatement.setString(5, date_expires);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                lease_id = rs.getInt("lease_id");
-            }
-        } catch(SQLException se){
-            se.printStackTrace();
-        }
 
         try{
             // TO DO: ERROR HANDLING 
@@ -343,25 +332,16 @@ public class PopulateData {
         } catch(SQLException se){
             se.printStackTrace();
         }
-    }
 
-    // OH: IS THIS CORRECT?
-    public static void recordMoveOut(Connection conn){
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("Input lease id");
-        String lease_id = scan.nextLine();
+        // TO DO: replace w tenant name 
+        System.out.println("Input tenant id");
+        int tenant_id = scan.nextInt();
+        scan.nextLine(); // to consume \n char 
         try{
-            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM has_lease WHERE lease_id = ?");
-            preparedStatement1.setString(1, lease_id);
-            preparedStatement1.executeUpdate();                   
-            preparedStatement1.close();
-            PreparedStatement preparedStatement2 = conn.prepareStatement("DELETE FROM apartment WHERE lease_id = ?");
-            preparedStatement2.setString(1, lease_id);
-            preparedStatement2.executeUpdate();                   
-            preparedStatement2.close();
-            PreparedStatement preparedStatement3 = conn.prepareStatement("DELETE FROM lease WHERE lease_id = ?");
-            preparedStatement3.setString(1, lease_id);
+            // TO DO: ERROR HANDLING 
+            PreparedStatement preparedStatement3 = conn.prepareStatement("Insert into has_lease (lease_id ,tenant_id) values (?, ?)");
+            preparedStatement3.setInt(1, lease_id);
+            preparedStatement3.setInt(2, tenant_id);
             preparedStatement3.executeUpdate();                   
             preparedStatement3.close();
         } catch(SQLException se){
@@ -370,33 +350,13 @@ public class PopulateData {
 
     }
 
-    // OH: WHY NOT WORKING??
     public static void addDependant(Connection conn){
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Input tenant first name");
-        String first_name = scan.nextLine();
+        System.out.println("Input tenant id");
+        int tenant_id = scan.nextInt();
+        scan.nextLine();
 
-        System.out.println("Input tenant last name");
-        String last_name = scan.nextLine();
-        int tenant_id = 0;
-        try{
-            // OH: PREPARED STATEMENT NOT WORKING 
-            PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT tenant_id from tenant WHERE first_name=? AND last_name = ?");
-            preparedStatement1.setString(1, first_name);
-            preparedStatement1.setString(2, last_name);
-            ResultSet result1 = preparedStatement1.executeQuery();
-            
-            while(result1.next()){
-                tenant_id = result1.getInt("tenant_id");
-            }
-            System.out.println("tenant_id " + tenant_id);
-            result1.close();
-            preparedStatement1.close();
-        } catch(SQLException se){
-            se.printStackTrace();
-        }
-    
         System.out.println("Input dependant's first name");
         String dependant_first_name = scan.nextLine();
 
