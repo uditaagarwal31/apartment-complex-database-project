@@ -240,18 +240,48 @@ public class PopulateData {
     // OH: WHAT EXACTLY DO YOU MEAN BY RECORD LEASE DATA?
     public static void recordLeaseData(Connection conn){
         Scanner scan = new Scanner(System.in);
+        System.out.println("Choose which apartment style you'd like. All leases are for 12 months. \n 1 - 1 bedroom & 1 bathroom apartment with 1200 sq feet, base rent $1200 per month and security deposit $2400 \n 2 - 2 bedroom & 1 bathroom apartment with 1400 sq feet, base rent $1800 per month and security deposit $3600 \n 3 - 3 bedroom & 2 bathroom apartment with 1600 sq feet, base rent $2400 per month and security deposit $4800 \n 4 - 4 bedroom & 2 bathroom apartment with 1800 sq feet, base rent $2800 per month and security deposit $5600");
+        int apartment_style_choice = scan.nextInt();
+        scan.nextLine();
+        double rent = 0;
+        int lease_term = 12;
+        double security_deposit = 0;
+        int apartment_size = 0;
+        int num_bathrooms = 0;
+        int num_bedrooms = 0;
 
-        System.out.println("Input lease's monthly rent");
-        double rent = scan.nextDouble();
-        scan.nextLine(); // to consume \n char 
-
-        System.out.println("Input lease term in months");
-        int lease_term = scan.nextInt();
-        scan.nextLine(); // to consume \n char 
-
-        System.out.println("Input lease's security deposit");
-        double security_deposit = scan.nextDouble();
-        scan.nextLine(); // to consume \n char 
+        switch (apartment_style_choice) {
+            case 1:
+                rent = 1200;
+                security_deposit = 2400;
+                apartment_size = 1200;
+                num_bathrooms = 1;
+                num_bedrooms = 1;
+                break;
+            case 2:
+                rent = 1800;
+                security_deposit = 3600;
+                apartment_size = 1400;
+                num_bathrooms = 1;
+                num_bedrooms = 2;
+                break;
+            case 3:
+                rent = 2400;
+                security_deposit = 4800;
+                apartment_size = 1600;
+                num_bathrooms = 2;
+                num_bedrooms = 3;
+                break;
+            case 4:
+                rent = 2800;
+                security_deposit = 5600;
+                apartment_size = 1800;
+                num_bathrooms = 2;
+                num_bedrooms = 4;
+                break;
+            default:
+                break;
+        }
 
         System.out.println("Input lease date signed in the form DD-MMM-YYYY: ");
         String date_signed = scan.nextLine();
@@ -259,7 +289,7 @@ public class PopulateData {
         System.out.println("Input lease date expires in the form DD-MMM-YYYY: ");
         String date_expires = scan.nextLine();
 
-        System.out.println("Input move-out date if any in the form DD-MMM-YYYY: "); // OH: WHAT TO DO HERE?
+        System.out.println("Input move-out date if the tenant is super proactive and has that figured out already in the form DD-MMM-YYYY: "); // OH: WHAT TO DO HERE?
         String date_move_out = scan.nextLine();       
         String generatedColumns[] = { "lease_id" };
         int lease_id = 0;
@@ -290,18 +320,6 @@ public class PopulateData {
         System.out.println("Input apartment number associated with this lease");
         String apartment_num = scan.nextLine();
 
-        System.out.println("Input apartment size in sq feet");
-        int size = scan.nextInt();
-        scan.nextLine(); // to consume \n char 
-
-        System.out.println("Input number of bedrooms in the apartment");
-        int num_bedrooms = scan.nextInt();
-        scan.nextLine(); // to consume \n char 
-
-        System.out.println("Input number of bathrooms in the apartment");
-        int num_bathrooms = scan.nextInt();
-        scan.nextLine(); // to consume \n char 
-
         // gets property_id
         System.out.println("Input property name");
         String property_name = scan.nextLine();
@@ -322,7 +340,7 @@ public class PopulateData {
             // TO DO: ERROR HANDLING 
             PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values (?, ?, ?, ?, ?, ?)");
             preparedStatement2.setString(1, apartment_num);
-            preparedStatement2.setInt(2, size);
+            preparedStatement2.setInt(2, apartment_size);
             preparedStatement2.setInt(3, num_bedrooms);
             preparedStatement2.setInt(4, num_bathrooms);
             preparedStatement2.setInt(5, property_id);
