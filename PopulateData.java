@@ -293,64 +293,69 @@ public class PopulateData {
         String date_move_out = scan.nextLine();       
         String generatedColumns[] = { "lease_id" };
         int lease_id = 0;
+        PreparedStatement insert_lease;
         try{
             // TO DO: ERROR HANDLING 
-            PreparedStatement insert_lease = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, ?, ?, ?)", generatedColumns);
+            insert_lease = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, ?, ?, ?)", generatedColumns);
             insert_lease.setDouble(1, rent);
             insert_lease.setInt(2, lease_term);
             insert_lease.setDouble(3, security_deposit);
             insert_lease.setString(4, date_signed);
             insert_lease.setString(5, date_expires);
             insert_lease.setString(6, date_move_out);
-            insert_lease.executeUpdate();
-             try{
-                ResultSet generatedKeys = insert_lease.getGeneratedKeys();
-                if(generatedKeys.next()){
-                    lease_id = generatedKeys.getInt(1);
-                    System.out.println("lease_id here" + lease_id);
+            System.out.println("Input property id which corresponds to the property name of your choice \n 1 - Eastside Commons \n 2 - Oasis Lofts \n 3 - Riverfront Lofts \n 4 - Sunset Terrace \n 5 - Joyful Apartments");
+            int property_id = scan.nextInt();
+            scan.nextLine();
+            String apt_substr = property_id + "" + num_bedrooms + "";
+            String last_apartment_num_set = "";
+            try{
+                PreparedStatement calculate_apt_num = conn.prepareStatement("select apartment_num from apartment where apartment_num LIKE ? ");
+                calculate_apt_num.setString(1,apt_substr + "%");
+                ResultSet result = calculate_apt_num.executeQuery();
+                
+                while(result.next()){
+                    last_apartment_num_set = result.getString("apartment_num");
+                }
+                char c = last_apartment_num_set.charAt(2);
+                int actual_apt_num = Character.getNumericValue(c);
+                if (actual_apt_num >= 5) {
+                    System.out.println("Sorry we don't have any apartments of this type available in this property at the moment. Choose a different apartment style or property or try again after a few months");
+                } else {
+                    apt_substr += (++actual_apt_num);
+                }
+                insert_lease.executeUpdate();
+                try{
+                    ResultSet generatedKeys = insert_lease.getGeneratedKeys();
+                    if(generatedKeys.next()){
+                        lease_id = generatedKeys.getInt(1);
+                        System.out.println("lease_id here" + lease_id);
+                    }
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }                   
+                insert_lease.close();
+                try{
+                    // TO DO: ERROR HANDLING 
+                    PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values (?, ?, ?, ?, ?, ?)");
+                    preparedStatement2.setString(1, apt_substr);
+                    preparedStatement2.setInt(2, apartment_size);
+                    preparedStatement2.setInt(3, num_bedrooms);
+                    preparedStatement2.setInt(4, num_bathrooms);
+                    preparedStatement2.setInt(5, property_id);
+                    preparedStatement2.setInt(6, lease_id); 
+                    preparedStatement2.executeUpdate();                   
+                    preparedStatement2.close();
+                } catch(SQLException se){
+                    se.printStackTrace();
                 }
             } catch(SQLException se){
                 se.printStackTrace();
-            }                   
-            insert_lease.close();
-        } catch(SQLException se){
-            se.printStackTrace();
-        }
-
-        System.out.println("Input apartment number associated with this lease");
-        String apartment_num = scan.nextLine();
-
-        // gets property_id
-        System.out.println("Input property name");
-        String property_name = scan.nextLine();
-        int property_id = 0;
-        try{
-            PreparedStatement get_property_id = conn.prepareStatement("SELECT property_id from Property where name = ?");
-            get_property_id.setString(1, property_name);
-            ResultSet rs = get_property_id.executeQuery();
-            while (rs.next()) {
-                property_id = rs.getInt("property_id");
             }
         } catch(SQLException se){
             se.printStackTrace();
         }
 
-
-        try{
-            // TO DO: ERROR HANDLING 
-            PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values (?, ?, ?, ?, ?, ?)");
-            preparedStatement2.setString(1, apartment_num);
-            preparedStatement2.setInt(2, apartment_size);
-            preparedStatement2.setInt(3, num_bedrooms);
-            preparedStatement2.setInt(4, num_bathrooms);
-            preparedStatement2.setInt(5, property_id);
-            preparedStatement2.setInt(6, lease_id); 
-            preparedStatement2.executeUpdate();                   
-            preparedStatement2.close();
-        } catch(SQLException se){
-            se.printStackTrace();
-        }
-
+        
         // TO DO: replace w tenant name 
         System.out.println("Input tenant id");
         int tenant_id = scan.nextInt();
