@@ -93,7 +93,7 @@ insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, 
 insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values ('216', 1300, 1, 1, 6, 7);
 
 
-TENANT
+PROSPECTIVETENANT
 create table Tenant(
     tenant_id number(2) generated always as identity,
     first_name char(20),
@@ -110,9 +110,11 @@ create table Tenant(
     gender char(20),
     credit_score int,
     has_pet char(3),
+    visit_date DATE,
     primary key(tenant_id)
 );
 
+// OUTDATED 
 drop table Tenant;
 insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Hamlen', 'Rubenchik', 'Dach', '5878 Wayridge Alley', 'Mobile', 'Alabama', 'United States', '36670', '3553131071', 'hdach0@imageshack.us', 92, 'Male', 773, 'yes');
 insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Christye', 'Aucutt', 'Culpin', '6 Lerdahl Pass', 'Macon', 'Georgia', 'United States', '31296', '3037346124', 'cculpin1@networksolutions.com', 94, 'Polygender', 561, 'yes');
@@ -127,27 +129,6 @@ insert into Tenant (first_name, middle_name, last_name, address, city, state, co
 select * from Tenant;
 
 
-PROSPECTIVE TENANT
-drop table prospectivetenant;
-create table ProspectiveTenant(
-    tenant_id number(2),
-    visit_date DATE,
-    foreign key(tenant_id) references Tenant
-);
-
-
-insert into ProspectiveTenant (tenant_id, visit_date) values (1, '23-Jun-2023');
-insert into ProspectiveTenant (tenant_id, visit_date) values (2, '12-Sep-2022');
-insert into ProspectiveTenant (tenant_id, visit_date) values (3, '07-Nov-2020');
-insert into ProspectiveTenant (tenant_id, visit_date) values (4, '18-May-2021');
-insert into ProspectiveTenant (tenant_id, visit_date) values (5, '02-Aug-2023');
-insert into ProspectiveTenant (tenant_id, visit_date) values (6, '14-Oct-2020');
-insert into ProspectiveTenant (tenant_id, visit_date) values (7, '30-Jul-2022');
-insert into ProspectiveTenant (tenant_id, visit_date) values (8, '09-Apr-2021');
-insert into ProspectiveTenant (tenant_id, visit_date) values (9, '23-Jun-2023');
-insert into ProspectiveTenant (tenant_id, visit_date) values (10, '14-Oct-2020');
-insert into ProspectiveTenant (tenant_id, visit_date) values (11, '30-Jul-2022');
-insert into ProspectiveTenant (tenant_id, visit_date) values (13, '09-Apr-2021');
 
 DEPENDANT
 create table Dependant(
@@ -252,17 +233,17 @@ insert into Card (transaction_id ,card_num, card_name, expiry) values (5, '93782
 insert into Card (transaction_id ,card_num, card_name, expiry) values (6, '265874193020', 'Tara Sukumar','7189');
 
 
-
-create table has_lease(
+TENANT
+create table tenant(
     lease_id number(2),
     tenant_id number(2),
     foreign key(lease_id) references Lease,
     foreign key(tenant_id) references Tenant
 );
-insert into has_lease (lease_id ,tenant_id) values ('7', '1');
-insert into has_lease (lease_id ,tenant_id) values ('6', '2');
-insert into has_lease (lease_id ,tenant_id) values ('5', '3');
-insert into has_lease (lease_id ,tenant_id) values ('4', '4');
-insert into has_lease (lease_id ,tenant_id) values ('3', '5');
-insert into has_lease (lease_id ,tenant_id) values ('2', '6');
-insert into has_lease (lease_id ,tenant_id) values ('1', '7');
+insert into tenant (lease_id ,tenant_id) values ('7', '1');
+insert into tenant (lease_id ,tenant_id) values ('6', '2');
+insert into tenant (lease_id ,tenant_id) values ('5', '3');
+insert into tenant (lease_id ,tenant_id) values ('4', '4');
+insert into tenant (lease_id ,tenant_id) values ('3', '5');
+insert into tenant (lease_id ,tenant_id) values ('2', '6');
+insert into tenant (lease_id ,tenant_id) values ('1', '7');

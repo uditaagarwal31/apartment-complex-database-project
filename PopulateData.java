@@ -170,9 +170,17 @@ public class PopulateData {
 
         System.out.println("Input prospective tenant's zipcode");
         String zipcode = scan.nextLine();
+        while(zipcode.length() != 5){
+            System.out.println("Invalid zipcode. Please enter a valid 5 digit zipcode");
+            zipcode = scan.nextLine();
+        }
 
         System.out.println("Input prospective tenant's phone number");
         String phone_number = scan.nextLine();
+        while(phone_number.length() != 10){
+            System.out.println("Invalid phone number. Please enter a valid 10 digit number");
+            phone_number = scan.nextLine();
+        }
 
         System.out.println("Input prospective tenant's email");
         String email = scan.nextLine();
@@ -190,54 +198,46 @@ public class PopulateData {
 
         System.out.println("Input yes or no if the prospective tenant has a pet or not");
         String has_pet = scan.nextLine();
+
+        System.out.println("Input visit date in the form DD-MMM-YYYY: ");
+        String visit_date = scan.nextLine();
+
         int tenant_id = 0;
         String generatedColumns[] = { "tenant_id" };
         try{
             // TO DO: ERROR HANDLING 
-            PreparedStatement insert_tenant = conn.prepareStatement("Insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", generatedColumns);
-            insert_tenant.setString(1, first_name);
-            insert_tenant.setString(2, middle_name);
-            insert_tenant.setString(3, last_name);
-            insert_tenant.setString(4, address);
-            insert_tenant.setString(5, city);
-            insert_tenant.setString(6, state);
-            insert_tenant.setString(7, country);
-            insert_tenant.setString(8, zipcode);
-            insert_tenant.setString(9, phone_number);
-            insert_tenant.setString(10, email);
-            insert_tenant.setInt(11, age);
-            insert_tenant.setString(12, gender);
-            insert_tenant.setInt(13, credit_score);
-            insert_tenant.setString(14, has_pet);
-            insert_tenant.executeUpdate();                   
+            PreparedStatement insert_prospective_tenant = conn.prepareStatement("Insert into ProspectiveTenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", generatedColumns);
+            insert_prospective_tenant.setString(1, first_name);
+            insert_prospective_tenant.setString(2, middle_name);
+            insert_prospective_tenant.setString(3, last_name);
+            insert_prospective_tenant.setString(4, address);
+            insert_prospective_tenant.setString(5, city);
+            insert_prospective_tenant.setString(6, state);
+            insert_prospective_tenant.setString(7, country);
+            insert_prospective_tenant.setString(8, zipcode);
+            insert_prospective_tenant.setString(9, phone_number);
+            insert_prospective_tenant.setString(10, email);
+            insert_prospective_tenant.setInt(11, age);
+            insert_prospective_tenant.setString(12, gender);
+            insert_prospective_tenant.setInt(13, credit_score);
+            insert_prospective_tenant.setString(14, has_pet);
+            insert_prospective_tenant.setString(15, visit_date);
+            insert_prospective_tenant.executeUpdate();                   
             
             try{
-                ResultSet generatedKeys = insert_tenant.getGeneratedKeys();
+                ResultSet generatedKeys = insert_prospective_tenant.getGeneratedKeys();
                 if(generatedKeys.next()){
                     tenant_id = generatedKeys.getInt(1);
                 }
             } catch(SQLException se){
                 se.printStackTrace();
             }
-            insert_tenant.close();
-        } catch(SQLException se){
-            se.printStackTrace();
-        }
-
-        System.out.println("Input visit date in the form DD-MMM-YYYY: ");
-        String date = scan.nextLine();
-        try{ 
-            PreparedStatement insert_prospective_tenant = conn.prepareStatement("Insert into ProspectiveTenant (tenant_id, visit_date) values (?,?)");
-            insert_prospective_tenant.setInt(1, tenant_id);
-            insert_prospective_tenant.setString(2, date);
-            insert_prospective_tenant.executeUpdate();                   
             insert_prospective_tenant.close();
         } catch(SQLException se){
             se.printStackTrace();
         }
     }
 
-    // OH: WHAT EXACTLY DO YOU MEAN BY RECORD LEASE DATA?
     public static void recordLeaseData(Connection conn){
         Scanner scan = new Scanner(System.in);
         System.out.println("Choose which apartment style you'd like. All leases are for 12 months. \n 1 - 1 bedroom & 1 bathroom apartment with 1200 sq feet, base rent $1200 per month and security deposit $2400 \n 2 - 2 bedroom & 1 bathroom apartment with 1400 sq feet, base rent $1800 per month and security deposit $3600 \n 3 - 3 bedroom & 2 bathroom apartment with 1600 sq feet, base rent $2400 per month and security deposit $4800 \n 4 - 4 bedroom & 2 bathroom apartment with 1800 sq feet, base rent $2800 per month and security deposit $5600");
@@ -322,6 +322,7 @@ public class PopulateData {
                     System.out.println("Sorry we don't have any apartments of this type available in this property at the moment. Choose a different apartment style or property or try again after a few months");
                 } else {
                     apt_substr += (++actual_apt_num);
+                    System.out.println("The assigned apartment is " + apt_substr);
                 }
                 insert_lease.executeUpdate();
                 try{
@@ -362,7 +363,7 @@ public class PopulateData {
         scan.nextLine(); // to consume \n char 
         try{
             // TO DO: ERROR HANDLING 
-            PreparedStatement preparedStatement3 = conn.prepareStatement("Insert into has_lease (lease_id ,tenant_id) values (?, ?)");
+            PreparedStatement preparedStatement3 = conn.prepareStatement("Insert into tenant (lease_id ,tenant_id) values (?, ?)");
             preparedStatement3.setInt(1, lease_id);
             preparedStatement3.setInt(2, tenant_id);
             preparedStatement3.executeUpdate();                   
