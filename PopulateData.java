@@ -31,9 +31,9 @@ public class PopulateData {
                 if(role_type == 1){
                     propertyManagerMenu(conn);
                 } else if(role_type == 2){
-                    tenantMenu();
+                    tenantMenu(conn);
                 } else if(role_type == 3){
-                    financialManagerMenu();
+                    financialManagerMenu(conn);
                 }
 
                 conn.close();
@@ -99,19 +99,26 @@ public class PopulateData {
     }
 
 
-    public static void tenantMenu(){
+    public static void tenantMenu(Connection conn){
         int option;
         Scanner scan = new Scanner(System.in);
         
         while(true){
-            System.out.println("Hi tenant!\n Choose the task you want to accomplish today \n 1 - Check payment status \n 2 - Make rental payment \n 3 - Update personal data");
+            System.out.println("Hi tenant!\n Choose the task you want to accomplish today \n 1 - Check payment status \n 2 - Make rental payment \n 3 - Update personal data \n 4 - Add amenity to your lease");
             try{
                 if(scan.hasNextInt()){
                     option = scan.nextInt();
-                    if(option > 0 && option < 4){
-                        break;
+                    if(option == 1) {
+                        checkPaymentStatus(conn);
+                    } else if (option == 2){
+                        makeRentalPayment(conn);
+                    } else if (option == 3){
+                        updatePersonalData(conn);
+                    } else if (option == 4){
+                        addAmenityToLease(conn);
+                    } else{
+                        System.out.println("Please enter a valid integer number between 1 and 3");
                     }
-                    System.out.println("Please enter a valid integer number between 1 and 3");
                 }
             } catch(InputMismatchException e){
                 scan.nextLine();
@@ -121,7 +128,7 @@ public class PopulateData {
         }
     }
 
-    public static void financialManagerMenu(){
+    public static void financialManagerMenu(Connection conn){
         int option;
         Scanner scan = new Scanner(System.in);
         
@@ -430,6 +437,97 @@ public class PopulateData {
         } catch(SQLException se){
             se.printStackTrace();
         }
+    }
+
+    public static void checkPaymentStatus(Connection conn){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter your tenant id");
+        int tenant_id = scan.nextInt();
+        String date_due = "";
+        String date_paid = "";
+        double total_due = 0;
+        int has_payment_due = 0;
+        int user_wants_to_pay_now = 0;
+        int invoice_num = 0;
+        
+        try{
+            PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
+            getAllPayments.setInt(1, tenant_id);
+            ResultSet payments = getAllPayments.executeQuery();
+            payments.getArray("date_paid");
+            
+            
+            while(payments.next()){
+                date_due = payments.getString("date_due");
+                date_paid = payments.getString("date_paid");
+                total_due = payments.getDouble("total_due");
+                invoice_num = payments.getInt("invoice_num");
+                has_payment_due = 1;
+            }
+            
+            if(has_payment_due == 0 || date_paid != null){
+                System.out.println("You don't have any payments due at this time. You're upto date with all your payments!");
+            } else {
+                System.out.println("You have $" + total_due + " due by " + date_due + ".");
+                System.out.println("Enter 2 to make the payment now");
+                user_wants_to_pay_now = scan.nextInt();
+                if(user_wants_to_pay_now == 2){
+                    makeRentalPayment(conn, invoice_num);
+                }
+            }
+            payments.close();
+            getAllPayments.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+    }
+
+    public static void makeRentalPayment(Connection conn, int invoice_num){
+        Scanner scan = new Scanner(System.in);
+        if(invoice_num == 0){
+            System.out.println("Enter your tenant id");
+            int tenant_id = scan.nextInt();
+            try{
+                PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
+                getAllPayments.setInt(1, tenant_id);
+                ResultSet payments = getAllPayments.executeQuery();
+            
+                while(payments.next()){                  
+                    invoice_num = payments.getInt("invoice_num");
+                }
+                payments.close();
+                getAllPayments.close();
+            } catch(SQLException se){
+            se.printStackTrace();
+            }
+        } 
+
+        System.out.println("Choose your payment method. Choose 1 - Card \n 2 - Cash");
+        int payment_method_choice = scan.nextInt();
+        try{
+            PreparedStatement insert_payment_method = conn.prepareStatement("Insert into PaymentMethod (invoice_num) values (?)");
+            insert_payment_method.setInt(1, invoice_num);
+            insert_payment_method.executeUpdate();                   
+            insert_payment_method.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+        if(payment_method_choice == 1){
+            
+
+        } else if(payment_method_choice == 2){
+
+        }
+
 
     }
+
+    public static void updatePersonalData(Connection conn){
+        System.out.println("hi ");
+    }
+
+    public static void addAmenityToLease(Connection conn){
+        System.out.println("hi ");
+    }
+
 }
