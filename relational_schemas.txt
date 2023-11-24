@@ -179,6 +179,7 @@ create table Payment(
     primary key(invoice_num),
     foreign key(lease_id) references Lease
 );
+insert into Payment (lease_id, date_due, date_paid, total_due) values (61, to_date('2001-12-10','yyyy-mm-dd'), to_date('2002-12-10','yyyy-mm-dd'), 3678);
 insert into Payment (lease_id, date_due, date_paid, total_due) values (1, '14-Feb-2021', '12-Feb-2021', 3678);
 insert into Payment (lease_id, date_due, date_paid, total_due) values (2, '05-Sep-2021', '04-Sep-2021', 2465);
 insert into Payment (lease_id, date_due, date_paid, total_due) values (3, '28-Nov-2020', '28-Nov-2020', 4192);
