@@ -180,7 +180,7 @@ public class PopulateData {
             zipcode = scan.nextLine();
         }
 
-        System.out.println("Input prospective tenant's phone number");
+        System.out.println("Input prospective tenant's phone number (without any special characters)");
         String phone_number = scan.nextLine();
         while(phone_number.length() != 10){
             System.out.println("Invalid phone number. Please enter a valid 10 digit number");
