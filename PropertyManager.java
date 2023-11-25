@@ -474,7 +474,6 @@ public class PropertyManager {
         }
 
         try{
-            
             PreparedStatement preparedStatement2 = conn.prepareStatement("Update Lease set date_move_out = to_date(?,'mm-dd-yyyy') WHERE lease_id=?");
             preparedStatement2.setString(1, date_move_out);
             preparedStatement2.setInt(2, lease_id);

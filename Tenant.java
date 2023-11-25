@@ -12,6 +12,54 @@ public class Tenant {
 
     }
 
+    public static boolean isValidDate(String date){
+        if(date.length() != 10){
+            return false;
+        }
+        // MM-DD-YYYY
+        int month = Integer.valueOf(date.substring(0, 2));
+        int actual_date = Integer.valueOf(date.substring(3, 5));
+        int year = Integer.valueOf(date.substring(6));
+        if(month < 1 || month > 12){
+            System.out.println("Invalid month. Please enter a value between 1 and 12.");
+            return false;
+        } else if (actual_date < 1 || actual_date > 31){
+            System.out.println("Invalid date. Please enter a value between 1 and 31.");
+            return false;
+        } else if (year < 1900 || year > 2025){
+            System.out.println("Invalid year. Please enter a value between 1900 and 2025.");
+            return false;
+        }
+
+        // validates date entry for February
+        if(month == 2 && actual_date > 28){
+            System.out.println("Invalid date. Please enter a date between 1 - 28 for February.");
+            return false;
+        }
+
+        // validates date entry for months with 30 days 
+        if((month == 4 || month == 6 || month == 9 || month == 11) && actual_date > 30){
+            System.out.println("Invalid date. Please enter a date between 1 - 30 for this month.");
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean card_expiry_validated(String date){
+        // MMYY
+        int month = Integer.valueOf(date.substring(0, 2));
+        int year = Integer.valueOf(date.substring(2,4));
+        if(date.length() != 4){
+            return false;
+        }
+        if(month < 1 || month > 12){
+            System.out.println("Invalid month. Please enter a value between 1 and 12.");
+            return false;
+        } 
+        return true;
+    }
+
+
     public static void checkPaymentStatus(Connection conn){
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter your tenant id");
@@ -92,10 +140,21 @@ public class Tenant {
                 getAllPayments.close();
             } catch(SQLException se){
             se.printStackTrace();
+            return;
             }
         } 
-        System.out.println("Enter today's date in the form DD-MMM-YYYY:");
-        String payment_date = scan.nextLine();
+        
+        String payment_date = "";
+        while(true){
+            System.out.println("Enter today's date in the form MM-DD-YYYY");
+            payment_date = scan.nextLine();
+            boolean verdict = isValidDate(payment_date);
+            if (verdict) {
+                break;
+            } else{
+                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
+            }
+        }
         System.out.println("Choose your payment method. Choose 1 - Card \n 2 - Cash");
         int payment_method_choice = scan.nextInt();
         scan.nextLine();
@@ -104,15 +163,30 @@ public class Tenant {
         try{
             PreparedStatement insert_payment_method = conn.prepareStatement("Insert into PaymentMethod (invoice_num) values (?)", generatedColumns);
             insert_payment_method.setInt(1, invoice_num);
+            insert_payment_method.executeUpdate();
              // card
             if(payment_method_choice == 1){
-                System.out.println("Enter your card number");
+                System.out.println("Enter your 15-16 digit card number");
                 String card_num = scan.nextLine();
+                while(card_num.length() < 15 || card_num.length() > 16){
+                    System.out.println("Invalid card number. Please enter a valid 15 or 16 digit number.");
+                    card_num = scan.nextLine();
+                }
                 System.out.println("Enter the name on your card");
                 String card_name = scan.nextLine();
-                System.out.println("Enter the card expiry in the form MMYY");
-                String card_expiry = scan.nextLine();
-                insert_payment_method.executeUpdate();  
+                String card_expiry = "";
+                
+                while(true){
+                    System.out.println("Enter the card expiry in the form MMYY");
+                    card_expiry = scan.nextLine();
+                    boolean verdict = card_expiry_validated(card_expiry);
+                    if (verdict) {
+                        break;
+                    } else{
+                        System.out.println("Invalid date format. Try again by entering a date in the form MMYY");
+                    }
+                }
+
                 try{
                     ResultSet generatedKeys = insert_payment_method.getGeneratedKeys();
                     if(generatedKeys.next()){
@@ -120,6 +194,7 @@ public class Tenant {
                     }
                 } catch(SQLException se){
                     se.printStackTrace();
+                    return;
                 }
                 insert_payment_method.close();
 
@@ -134,6 +209,7 @@ public class Tenant {
                     System.out.println("Payment successful!");
                 } catch(SQLException se){
                     se.printStackTrace();
+                    return;
                 }
 
             } 
@@ -183,6 +259,7 @@ public class Tenant {
                     }
                 } catch(SQLException se){
                     se.printStackTrace();
+                    return;
                 }
                 insert_payment_method.close();
         
@@ -200,20 +277,23 @@ public class Tenant {
                     System.out.println("Payment successful!");
                 } catch(SQLException se){
                     se.printStackTrace();
+                    return;
                 }
             }   
 
             try{
-                PreparedStatement update_paid_date = conn.prepareStatement("Update Payment set date_paid = ? WHERE invoice_num=?");
+                PreparedStatement update_paid_date = conn.prepareStatement("Update Payment set date_paid = to_date(?,'mm-dd-yyyy') WHERE invoice_num=?");
                 update_paid_date.setString(1, payment_date);
                 update_paid_date.setInt(2, invoice_num);
                 update_paid_date.executeUpdate();
                 update_paid_date.close();
             } catch(SQLException se){
                 se.printStackTrace();
+                return;
             }       
         } catch(SQLException se){
             se.printStackTrace();
+            return;
         }
     }
 
@@ -549,7 +629,6 @@ public class Tenant {
             se.printStackTrace();
         }
 
-        // TO DO: add monthly cost 
         
         int choice = 0;
         while (true) {
@@ -568,6 +647,29 @@ public class Tenant {
                                 add_petwalker.close();
                                 has_pet_walker = 1;
                                 System.out.println("Pet walking amenity successfully added!");
+                                double rent = 0;
+                                try{
+                                    PreparedStatement get_monthly_rent = conn.prepareStatement("SELECT total_due from payment WHERE lease_id=?");
+                                    get_monthly_rent.setInt(1, lease_id);
+                                    ResultSet result = get_monthly_rent.executeQuery();
+                                    while (result.next()){
+                                        rent = result.getDouble("total_due");
+                                    }
+                                    result.close();
+                                    get_monthly_rent.close();
+                                } catch(SQLException se){
+                                    se.printStackTrace();
+                                }   
+
+                                try{
+                                    PreparedStatement update_payments_due = conn.prepareStatement("Update Payment set total_due = ? WHERE lease_id=? and date_paid is NULL");
+                                    update_payments_due.setDouble(1, rent + 200);
+                                    update_payments_due.setInt(2, lease_id);
+                                    update_payments_due.executeUpdate();
+                                    update_payments_due.close();
+                                } catch(SQLException se){
+                                    se.printStackTrace();
+                                }   
                             } catch(SQLException se){
                                 se.printStackTrace();
                             }
@@ -584,6 +686,29 @@ public class Tenant {
                                 add_cleaning.close();
                                 has_cleaning = 1;
                                 System.out.println("Cleaning amenity successfully added!");
+                                double rent = 0;
+                                try{
+                                    PreparedStatement get_monthly_rent = conn.prepareStatement("SELECT total_due from payment WHERE lease_id=?");
+                                    get_monthly_rent.setInt(1, lease_id);
+                                    ResultSet result = get_monthly_rent.executeQuery();
+                                    while (result.next()){
+                                        rent = result.getDouble("total_due");
+                                    }
+                                    result.close();
+                                    get_monthly_rent.close();
+                                } catch(SQLException se){
+                                    se.printStackTrace();
+                                }   
+
+                                try{
+                                    PreparedStatement update_payments_due = conn.prepareStatement("Update Payment set total_due = ? WHERE lease_id=? and date_paid is NULL");
+                                    update_payments_due.setDouble(1, rent + 400);
+                                    update_payments_due.setInt(2, lease_id);
+                                    update_payments_due.executeUpdate();
+                                    update_payments_due.close();
+                                } catch(SQLException se){
+                                    se.printStackTrace();
+                                }   
                             } catch(SQLException se){
                                 se.printStackTrace();
                             }
@@ -600,6 +725,29 @@ public class Tenant {
                                 add_babysitting.close();
                                 has_babysitting = 1;
                                 System.out.println("Baby sitting amenity successfully added!");
+                                double rent = 0;
+                                try{
+                                    PreparedStatement get_monthly_rent = conn.prepareStatement("SELECT total_due from payment WHERE lease_id=?");
+                                    get_monthly_rent.setInt(1, lease_id);
+                                    ResultSet result = get_monthly_rent.executeQuery();
+                                    while (result.next()){
+                                        rent = result.getDouble("total_due");
+                                    }
+                                    result.close();
+                                    get_monthly_rent.close();
+                                } catch(SQLException se){
+                                    se.printStackTrace();
+                                }   
+
+                                try{
+                                    PreparedStatement update_payments_due = conn.prepareStatement("Update Payment set total_due = ? WHERE lease_id=? and date_paid is NULL");
+                                    update_payments_due.setDouble(1, rent + 600);
+                                    update_payments_due.setInt(2, lease_id);
+                                    update_payments_due.executeUpdate();
+                                    update_payments_due.close();
+                                } catch(SQLException se){
+                                    se.printStackTrace();
+                                }   
                             } catch(SQLException se){
                                 se.printStackTrace();
                             }

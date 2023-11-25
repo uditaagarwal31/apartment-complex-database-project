@@ -167,7 +167,7 @@ insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date
 PAYMENT
 drop table Payment;
 create table Payment(
-    invoice_num number(2) generated always as identity,
+    invoice_num number(4) generated always as identity,
     lease_id number(2),
     date_due DATE,
     date_paid DATE,
@@ -188,7 +188,7 @@ select * from payment;
 PAYMENT METHOD
 create table PaymentMethod(
     transaction_id number(2) generated always as identity,
-    invoice_num number(2),
+    invoice_num number(4),
     primary key(transaction_id),
     foreign key(invoice_num) references Payment
 );
@@ -219,7 +219,7 @@ insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty
 CARD
 create table Card(
     transaction_id number(2),
-    card_num char(12),
+    card_num char(16),
     card_name char(30),
     expiry char(4),
     foreign key(transaction_id) references PaymentMethod
