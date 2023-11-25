@@ -346,7 +346,7 @@ public class PropertyManager {
             se.printStackTrace();
         }
 
-        System.out.println("Security deposit of " + security_deposit + " is due today.");
+        System.out.println("Security deposit of $" + security_deposit + " and 1 month's rent of $" + rent + " is due today.");
         String date_paid = "";
         try{
             PreparedStatement security_deposit_pay = conn.prepareStatement("Insert into Payment (lease_id, date_due, date_paid, total_due) values (?, to_date(?,'mm-dd-yyyy'), ?,  ?)");
@@ -360,13 +360,42 @@ public class PropertyManager {
             se.printStackTrace();
         }
 
+        try{
+            PreparedStatement first_month_rent_pay = conn.prepareStatement("Insert into Payment (lease_id, date_due, date_paid, total_due) values (?, to_date(?,'mm-dd-yyyy'), ?,  ?)");
+            first_month_rent_pay.setInt(1, lease_id);
+            first_month_rent_pay.setString(2, date_signed);
+            first_month_rent_pay.setString(3, date_paid);
+            first_month_rent_pay.setDouble(4, rent);
+            first_month_rent_pay.executeUpdate();                   
+            first_month_rent_pay.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
 
+        int month_copy_current_yr = month + 1;
+        int month_copy_new_yr = 1;
+        String monthly_rent_due = "";
 
-        // TO DO: insert 12 months worth of payments 
-        
-
-
-
+        for(int i = 0; i < 11; i++){
+            if(month_copy_current_yr <= 12){
+                monthly_rent_due = Integer.valueOf(month_copy_current_yr) + "-" + "01" + "-" + Integer.valueOf(year);
+                month_copy_current_yr++;
+            } else if(month_copy_new_yr < month){
+                monthly_rent_due = Integer.valueOf(month_copy_new_yr) + "-" + "01" + "-" + Integer.valueOf(year+1);
+                month_copy_new_yr++;
+            }
+            try{
+                PreparedStatement monthly_rent_pay = conn.prepareStatement("Insert into Payment (lease_id, date_due, date_paid, total_due) values (?, to_date(?,'mm-dd-yyyy'), ?,  ?)");
+                monthly_rent_pay.setInt(1, lease_id);
+                monthly_rent_pay.setString(2, monthly_rent_due);
+                monthly_rent_pay.setString(3, date_paid);
+                monthly_rent_pay.setDouble(4, rent);
+                monthly_rent_pay.executeUpdate();                   
+                monthly_rent_pay.close();
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
+        }
     }
 
     public void addDependant(Connection conn){
