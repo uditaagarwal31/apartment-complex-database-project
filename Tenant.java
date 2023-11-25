@@ -771,3 +771,9 @@ public class Tenant {
     }
     
 }
+
+
+// TO DO: validate cash inputs 
+// TO DO: check move out date set between lease expiry & sign date
+// TO DO: check if even 1 paid_date isn't null, it still shows that u have payments due
+// TO DO: add unique constraint to transaction_id/invoice_num 

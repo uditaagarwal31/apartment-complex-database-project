@@ -482,4 +482,19 @@ public class PropertyManager {
             se.printStackTrace();
         }
     }
+
+    // ASSUMPTION: all properties have standard 10 amenities 
+    public void addAmenityToProperty(Connection conn){
+        // TO DO: print existing amenities from Amenity table
+        // TO DO: enter new amenity name & see if its private or public & accordingly add to respective table
+        // TO DO: ask which property number u want to put amenity in
+            // check if amenity exists in that property
+            // if not add it & update propertyamenities table 
+            // else say it exists 
+
+    }
+
+
+    // in add amenity to lease, loop thru the existing amenities & print them out & ask which one u want to add 
+
 }
