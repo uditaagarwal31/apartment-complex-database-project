@@ -497,7 +497,104 @@ public class Tenant {
     }
 
     public static void addAmenityToLease(Connection conn){
-        System.out.println("hi ");
+        Scanner scan = new Scanner(System.in);
+        int lease_id = 0;
+        
+        while(true){
+            System.out.println("Enter your lease id");
+            lease_id = scan.nextInt();
+            try{
+                PreparedStatement check_lease_exists = conn.prepareStatement("SELECT * from Lease WHERE lease_id=?");
+                check_lease_exists.setInt(1, lease_id);
+                ResultSet result = check_lease_exists.executeQuery();
+                
+                if(!result.next()){
+                    System.out.println("Invalid lease id. This lease does not exist. Please enter a valid id.");
+                } else{
+                    break;
+                }
+                result.close();
+                check_lease_exists.close();
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
+        }
+
+        int has_pet_walker = 0;
+        int has_cleaning = 0;
+        int has_babysitting = 0;
+
+        try{
+            PreparedStatement check_amenity_added = conn.prepareStatement("SELECT * from leaseamenities WHERE lease_id=?");
+            check_amenity_added.setInt(1, lease_id);
+            ResultSet result = check_amenity_added.executeQuery();
+                
+            while(result.next()){
+                int amenity_existing = result.getInt("amenity_id");
+                if(amenity_existing == 8){
+                    System.out.println("You have the pet walker amenity added to your lease already");
+                    has_pet_walker = 1;
+                } else if(amenity_existing == 9){
+                    System.out.println("You have the cleaning services amenity added to your lease already");
+                    has_cleaning = 1;
+                } else if(amenity_existing == 10){
+                    System.out.println("You have the baby sitting amenity added to your lease already");
+                    has_babysitting = 1;
+                }
+            }
+            result.close();
+            check_amenity_added.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+
+        // TO DO: add monthly cost 
+        // TO DO: finish int / valid value error checking 
+        System.out.println("Enter the private amenity you want to add to your lease \n1 - Pet Walker at $200 per month \n2 - Cleaning Service at $400 per month \n3 - Babysitting service at $600 per month");
+        int choice = scan.nextInt();
+        if(choice == 1){
+            if(has_pet_walker == 0){
+                try{
+                    PreparedStatement add_petwalker = conn.prepareStatement("Insert into leaseamenities (lease_id ,amenity_id) values (?, ?)");
+                    add_petwalker.setInt(1, lease_id);
+                    add_petwalker.setInt(2, 8);
+                    add_petwalker.executeUpdate();                   
+                    add_petwalker.close();
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+            } else {
+                System.out.println("You already have this amenity added to your lease");
+            }    
+        } else if (choice == 2){
+            if(has_cleaning == 0){
+                try{
+                    PreparedStatement add_cleaning = conn.prepareStatement("Insert into leaseamenities (lease_id ,amenity_id) values (?, ?)");
+                    add_cleaning.setInt(1, lease_id);
+                    add_cleaning.setInt(2, 9);
+                    add_cleaning.executeUpdate();                   
+                    add_cleaning.close();
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+            } else {
+                System.out.println("You already have this amenity added to your lease");
+            }      
+        } else if (choice == 3){
+            if(has_babysitting == 0){
+                try{
+                    PreparedStatement add_babysitting = conn.prepareStatement("Insert into leaseamenities (lease_id ,amenity_id) values (?, ?)");
+                    add_babysitting.setInt(1, lease_id);
+                    add_babysitting.setInt(2, 10);
+                    add_babysitting.executeUpdate();                   
+                    add_babysitting.close();
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+            } else {
+                System.out.println("You already have this amenity added to your lease");
+            }  
+        }
     }
     
 }

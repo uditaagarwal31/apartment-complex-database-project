@@ -1,4 +1,3 @@
-
 javac PopulateData.java 
 java -cp .:ojdbc11.jar PopulateData
 
@@ -6,7 +5,7 @@ PROPERTY
 drop table Property;
 select * from Property;
 create table Property(
-    property_id char(2),
+    property_id number(2) generated always as identity,
     name varchar(20),
     address varchar(30),
     city char(20),
@@ -15,39 +14,36 @@ create table Property(
     zipcode char(5),
     primary key(property_id)
 );
-insert into Property (property_id, name, address, city, state, country, zipcode) values (1, 'Eastside Commons', '77571 Memorial Avenue', 'Los Angeles', 'California', 'United States', '90020');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (2, 'Oasis Lofts', '8 Straubel Avenue', 'Falls Church', 'Virginia', 'United States', '22047');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (3, 'Riverfront Lofts', '7758 Debs Parkway', 'San Diego', 'California', 'United States', '92186');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (4, 'Sunset Terrace', '6 Dahle Street', 'Lansing', 'Michigan', 'United States', '48930');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (5, 'Joyful Apartments', '78890 Everett Avenue', 'Washington', 'District of Columbia', 'United States', '20520');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (6, 'Serenity Commons', '76 Shelley Point', 'Miami', 'Florida', 'United States', '33261');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (7, 'Beach Bum', '5 Pawling Drive', 'Mesquite', 'Texas', 'United States', '75185');
-insert into Property (property_id, name, address, city, state, country, zipcode) values (8, 'Lakeside Heaven', '27 Meadow Ridge Terrace', 'Fort Lauderdale', 'Florida', 'United States', '33310');
+insert into Property (name, address, city, state, country, zipcode) values ('Eastside Commons', '77571 Memorial Avenue', 'Los Angeles', 'California', 'United States', '90020');
+insert into Property (name, address, city, state, country, zipcode) values ('Oasis Lofts', '8 Straubel Avenue', 'Falls Church', 'Virginia', 'United States', '22047');
+insert into Property (name, address, city, state, country, zipcode) values ('Riverfront Lofts', '7758 Debs Parkway', 'San Diego', 'California', 'United States', '92186');
+insert into Property (name, address, city, state, country, zipcode) values ('Sunset Terrace', '6 Dahle Street', 'Lansing', 'Michigan', 'United States', '48930');
+insert into Property (name, address, city, state, country, zipcode) values ('Joyful Apartments', '78890 Everett Avenue', 'Washington', 'District of Columbia', 'United States', '20520');
 
 
 AMENITY
 drop table Amenity;
 select * from Amenity;
 create table Amenity(
-    amenity_id char(2),
+    amenity_id number(2) generated always as identity,
     amenity_name varchar(20),
     primary key(amenity_id)
 );
-insert into Amenity (amenity_id, amenity_name) values (1, 'Swimming Pool');
-insert into Amenity (amenity_id, amenity_name) values (2, 'Gym');
-insert into Amenity (amenity_id, amenity_name) values (3, 'Vending Machine');
-insert into Amenity (amenity_id, amenity_name) values (4, 'Sauna');
-insert into Amenity (amenity_id, amenity_name) values (5, 'Cafe');
-insert into Amenity (amenity_id, amenity_name) values (6, 'Parking');
-insert into Amenity (amenity_id, amenity_name) values (7, 'Office Space');
-insert into Amenity (amenity_id, amenity_name) values (8, 'Pet Walker');
-insert into Amenity (amenity_id, amenity_name) values (9, 'Cleaning');
-insert into Amenity (amenity_id, amenity_name) values (10, 'Babysitting');
+insert into Amenity (amenity_name) values ('Swimming Pool');
+insert into Amenity (amenity_name) values ('Gym');
+insert into Amenity (amenity_name) values ('Vending Machine');
+insert into Amenity (amenity_name) values ('Sauna');
+insert into Amenity (amenity_name) values ('Cafe');
+insert into Amenity (amenity_name) values ('Parking');
+insert into Amenity (amenity_name) values ('Office Space');
+insert into Amenity (amenity_name) values ('Pet Walker');
+insert into Amenity (amenity_name) values ('Cleaning');
+insert into Amenity (amenity_name) values ('Babysitting');
 
 
 PUBLIC AMENITY
 create table PublicAmenity(
-    amenity_id char(2),
+    amenity_id number(2),
     accessibility char(7),
     foreign key(amenity_id) references Amenity
 );
@@ -61,7 +57,7 @@ insert into PublicAmenity (amenity_id, accessibility) values (7, '24/7');
 
 PRIVATE AMENITY 
 create table PrivateAmenity(
-    amenity_id char(2),
+    amenity_id number(2),
     monthly_cost numeric(7,2),
     foreign key(amenity_id) references Amenity
 );
@@ -77,7 +73,7 @@ create table Apartment(
     apt_size int,
     bedroom int,
     bathroom numeric (2,1),
-    property_id char(2),
+    property_id number(2),
     lease_id number(2),
     primary key(apartment_num),
     foreign key(property_id) references Property,
@@ -248,3 +244,31 @@ insert into tenant (lease_id ,tenant_id) values ('4', '4');
 insert into tenant (lease_id ,tenant_id) values ('3', '5');
 insert into tenant (lease_id ,tenant_id) values ('2', '6');
 insert into tenant (lease_id ,tenant_id) values ('1', '7');
+
+
+LEASEAMENITIES
+create table leaseamenities(
+    lease_id number(2),
+    amenity_id number(2),
+    foreign key(lease_id) references Lease,
+    foreign key(amenity_id) references Amenity
+);
+insert into leaseamenities (lease_id ,amenity_id) values ('1', '8');
+insert into leaseamenities (lease_id ,amenity_id) values ('27', '9');
+insert into leaseamenities (lease_id ,amenity_id) values ('65', '10');
+
+
+PROPERTYAMENITIES
+create table propertyamenities(
+    property_id number(2),
+    amenity_id number(2)
+    foreign key(property_id) references Property,
+    foreign key(amenity_id) references Amenity
+);
+insert into propertyamenities (property_id ,amenity_id) values ('1', '1');
+insert into propertyamenities (property_id ,amenity_id) values ('2', '2');
+insert into propertyamenities (property_id ,amenity_id) values ('3', '3');
+insert into propertyamenities (property_id ,amenity_id) values ('2', '4');
+insert into propertyamenities (property_id ,amenity_id) values ('4', '4');
+insert into propertyamenities (property_id ,amenity_id) values ('5', '4');
+
