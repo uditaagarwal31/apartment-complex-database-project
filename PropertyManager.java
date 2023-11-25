@@ -293,20 +293,24 @@ public class PropertyManager {
                 while(result.next()){
                     last_apartment_num_set = result.getString("apartment_num");
                 }
+                if(last_apartment_num_set == ""){
+                    last_apartment_num_set =  apt_substr + "" + '0';
+                }
                 char c = last_apartment_num_set.charAt(2);
                 int actual_apt_num = Character.getNumericValue(c);
                 if (actual_apt_num >= 5) {
-                    System.out.println("Sorry we don't have any apartments of this type available in this property at the moment. Choose a different apartment style or property or try again after a few months");
+                    System.out.println("Sorry we don't have any apartments of this type available in this property at the moment. Choose a different apartment style or property or try again after a few months.");
+                    return;
                 } else {
                     apt_substr += (++actual_apt_num);
-                    System.out.println("The assigned apartment is " + apt_substr);
+                    System.out.println("The assigned apartment is " + apt_substr + ".");
                 }
                 insert_lease.executeUpdate();
                 try{
                     ResultSet generatedKeys = insert_lease.getGeneratedKeys();
                     if(generatedKeys.next()){
                         lease_id = generatedKeys.getInt(1);
-                        System.out.println("lease_id here" + lease_id);
+                        System.out.println("The lease_id is " + lease_id + ".");
                     }
                 } catch(SQLException se){
                     se.printStackTrace();
@@ -341,6 +345,28 @@ public class PropertyManager {
         } catch(SQLException se){
             se.printStackTrace();
         }
+
+        System.out.println("Security deposit of " + security_deposit + " is due today.");
+        String date_paid = "";
+        try{
+            PreparedStatement security_deposit_pay = conn.prepareStatement("Insert into Payment (lease_id, date_due, date_paid, total_due) values (?, to_date(?,'mm-dd-yyyy'), ?,  ?)");
+            security_deposit_pay.setInt(1, lease_id);
+            security_deposit_pay.setString(2, date_signed);
+            security_deposit_pay.setString(3, date_paid);
+            security_deposit_pay.setDouble(4, security_deposit);
+            security_deposit_pay.executeUpdate();                   
+            security_deposit_pay.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+
+
+
+        // TO DO: insert 12 months worth of payments 
+        
+
+
+
     }
 
     public void addDependant(Connection conn){
