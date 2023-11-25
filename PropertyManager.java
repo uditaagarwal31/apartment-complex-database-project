@@ -12,26 +12,34 @@ public class PropertyManager {
 
     }
 
-    // add which months are valid for which dates 
     public static boolean isValidDate(String date){
         if(date.length() != 10){
             return false;
         }
         // MM-DD-YYYY
         int month = Integer.valueOf(date.substring(0, 2));
-        System.out.println("month " + month);
         int actual_date = Integer.valueOf(date.substring(3, 5));
-        System.out.println("actual date " + actual_date);
         int year = Integer.valueOf(date.substring(6));
-        System.out.println("year " + year);
         if(month < 1 || month > 12){
-            System.out.println("Invalid month. Please enter a value between 1 and 12");
+            System.out.println("Invalid month. Please enter a value between 1 and 12.");
             return false;
         } else if (actual_date < 1 || actual_date > 31){
-            System.out.println("Invalid date. Please enter a value between 1 and 31");
+            System.out.println("Invalid date. Please enter a value between 1 and 31.");
             return false;
         } else if (year < 1900 || year > 2025){
-            System.out.println("Invalid year. Please enter a value between 1900 and 2025");
+            System.out.println("Invalid year. Please enter a value between 1900 and 2025.");
+            return false;
+        }
+
+        // validates date entry for February
+        if(month == 2 && actual_date > 28){
+            System.out.println("Invalid date. Please enter a date between 1 - 28 for February.");
+            return false;
+        }
+
+        // validates date entry for months with 30 days 
+        if((month == 4 || month == 6 || month == 9 || month == 11) && actual_date > 30){
+            System.out.println("Invalid date. Please enter a date between 1 - 30 for this month.");
             return false;
         }
         return true;
@@ -190,34 +198,6 @@ public class PropertyManager {
                 se.printStackTrace();
             }
         }
-        
-
-
-        // TO DO: DEBUG 
-        // System.out.println("Input tenant's first name'");
-        // String first_name = scan.nextLine();
-        // System.out.println("Input tenant's last name'");
-        // String last_name = scan.nextLine();
-        // int tenant_id = 0;
-       
-        // try{
-        //     PreparedStatement get_tenant_id = conn.prepareStatement("SELECT tenant_id from ProspectiveTenant WHERE first_name=? and last_name = ?");
-        //     get_tenant_id.setString(1, first_name);
-        //     get_tenant_id.setString(2, last_name);
-        //     ResultSet result = get_tenant_id.executeQuery();
-            
-        //     while(result.next()){
-        //         tenant_id = result.getInt("tenant_id");
-        //         last_name = result.getString("last_name");
-        //         System.out.println("in " + tenant_id);
-        //     }
-        //     System.out.println("tenant_id " + tenant_id);
-        //     result.close();
-        //     get_tenant_id.close();
-        // } catch(SQLException se){
-        //     se.printStackTrace();
-        // }
-
 
         System.out.println("Choose which apartment style you'd like. All leases are for 12 months. \n 1 - 1 bedroom & 1 bathroom apartment with 1200 sq feet, base rent $1200 per month and security deposit $2400 \n 2 - 2 bedroom & 1 bathroom apartment with 1400 sq feet, base rent $1800 per month and security deposit $3600 \n 3 - 3 bedroom & 2 bathroom apartment with 1600 sq feet, base rent $2400 per month and security deposit $4800 \n 4 - 4 bedroom & 2 bathroom apartment with 1800 sq feet, base rent $2800 per month and security deposit $5600");
         int apartment_style_choice = scan.nextInt();
@@ -274,38 +254,26 @@ public class PropertyManager {
             }
         }
 
-        // TO DO: automatically generate expiry date 
         String date_expires = "";
-        while(true){
-            System.out.println("Input lease date expires in the form MM-DD-YYYY");
-            date_expires = scan.nextLine();
-            boolean verdict = isValidDate(date_expires);
-            if (verdict) {
-                break;
-            } else{
-                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
-            }
-        }
-        
-        // TO DO: set move out date to null here 
-        String date_move_out = "";
-        while(true){
-            System.out.println("Input move-out date if the tenant is super proactive and has that figured out already in the form MM-DD-YYYY"); 
-            date_move_out = scan.nextLine();
-            boolean verdict = isValidDate(date_move_out);
-            if (verdict) {
-                break;
-            } else{
-                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
-            }
+        int month = Integer.valueOf(date_signed.substring(0, 2));
+        int actual_date = Integer.valueOf(date_signed.substring(3, 5));
+        int year = Integer.valueOf(date_signed.substring(6));
+        String s_month = "";
+        if(month < 10){
+            s_month = "0" + Integer.toString(month);
+        } else{
+            s_month = Integer.toString(month);
         }
 
+        date_expires = s_month + "-" + Integer.valueOf(actual_date) + "-" + Integer.valueOf(year + 1);
+        System.out.println("Your lease will expire on " + date_expires);
+        
+        String date_move_out = "";
         String generatedColumns[] = { "lease_id" };
         int lease_id = 0;
         PreparedStatement insert_lease;
         try{
-            // TO DO: ERROR HANDLING 
-            insert_lease = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, to_date(?,'mm-dd-yyyy'), to_date(?,'mm-dd-yyyy'), to_date(?,'mm-dd-yyyy'))", generatedColumns);
+            insert_lease = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, to_date(?,'mm-dd-yyyy'), to_date(?,'mm-dd-yyyy'), ?)", generatedColumns);
             insert_lease.setDouble(1, rent);
             insert_lease.setInt(2, lease_term);
             insert_lease.setDouble(3, security_deposit);
@@ -440,7 +408,7 @@ public class PropertyManager {
 
         String date_move_out = "";
         while(true){
-            System.out.println("Input move-out date if the tenant is super proactive and has that figured out already in the form MM-DD-YYYY"); 
+            System.out.println("Input move-out date in the form MM-DD-YYYY"); 
             date_move_out = scan.nextLine();
             boolean verdict = isValidDate(date_move_out);
             if (verdict) {
@@ -452,7 +420,7 @@ public class PropertyManager {
 
         try{
             
-            PreparedStatement preparedStatement2 = conn.prepareStatement("Update Lease set date_move_out = ? WHERE lease_id=?");
+            PreparedStatement preparedStatement2 = conn.prepareStatement("Update Lease set date_move_out = to_date(?,'mm-dd-yyyy') WHERE lease_id=?");
             preparedStatement2.setString(1, date_move_out);
             preparedStatement2.setInt(2, lease_id);
             preparedStatement2.executeUpdate();
@@ -461,6 +429,3 @@ public class PropertyManager {
         }
     }
 }
-
-// TO DO: add exit to main menu
-// TO DO: add exit to leave program
