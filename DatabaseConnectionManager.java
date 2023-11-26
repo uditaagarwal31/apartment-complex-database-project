@@ -11,10 +11,10 @@ public class DatabaseConnectionManager {
         do{
             try{
                 // connect to db 
-            //    System.out.println("Enter Oracle user id: ");
-            //    String user = scan.nextLine();
-            //    System.out.println("Enter Oracle user password: ");
-            //    String pass = scan.nextLine();
+                // System.out.println("Enter Oracle user id: ");
+                // String user = scan.nextLine();
+                // System.out.println("Enter Oracle user password: ");
+                // String pass = scan.nextLine();
                 conn = DriverManager.getConnection(DB_URL, "uda224", "Golgappa/1234");
              //  conn = DriverManager.getConnection(DB_URL, user,pass);
                 System.out.println("yay connected");

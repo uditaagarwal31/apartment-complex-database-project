@@ -405,6 +405,7 @@ public class PropertyManager {
         while(true){
             System.out.println("Input tenant id");
             tenant_id = scan.nextInt();
+            scan.nextLine();
             try{
                 PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
                 check_tenant_exists.setInt(1, tenant_id);
@@ -454,7 +455,7 @@ public class PropertyManager {
             while(result1.next()){
                 lease_id = result1.getInt("lease_id");
             }
-            System.out.println("tenant_id " + lease_id);
+            System.out.println("Lease id is " + lease_id);
             result1.close();
             preparedStatement1.close();
         } catch(SQLException se){
@@ -485,15 +486,196 @@ public class PropertyManager {
 
     // ASSUMPTION: all properties have standard 10 amenities 
     public void addAmenityToProperty(Connection conn){
-        // TO DO: print existing amenities from Amenity table
+        Scanner scan = new Scanner(System.in); 
+        int property_id = 0;
+        while(true){
+            System.out.println("Enter the property_id you want to add the amenity in");
+            System.out.println("1 - Eastside Commons \n 2 - Oasis Lofts \n 3 - Riverfront Lofts \n 4 - Sunset Terrace \n 5 - Joyful Apartments");
+            try{
+                property_id = scan.nextInt();
+                scan.nextLine();
+                if(property_id < 1 && property_id > 5){
+                    System.out.println("Please enter a valid integer number between 1 and 5");
+                    property_id = scan.nextInt();
+                } else {
+                    break;
+                }
+            } catch(InputMismatchException e){
+                System.out.println("Please enter an integer value");
+                scan.nextLine();
+            }
+        }
+
+        // prints the amenities in that property
+        String amenity_name = "";
+        int amenity_id = 0;
+        try{
+            PreparedStatement get_property_amenity = conn.prepareStatement("select * from propertyamenities natural join amenity where property_id = ? order by amenity_id asc");
+            get_property_amenity.setInt(1, property_id);
+            ResultSet result = get_property_amenity.executeQuery();
+            System.out.println("This property contains the following amenities");
+            while(result.next()){
+                amenity_id = result.getInt("amenity_id");
+                amenity_name = result.getString("amenity_name");
+                System.out.println(amenity_name);
+            }
+            result.close();
+            get_property_amenity.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+
+        // checks if this particular property has that amenity you want to add
+        System.out.println("Enter the amenity you'd like to add in this property or enter 1 to return to the menu");
+        String new_amenity = scan.nextLine();
+        if(new_amenity.equals("1")){
+            return;
+        }
+        try{
+            PreparedStatement check_amenity_exists_in_property = conn.prepareStatement("select * from propertyamenities natural join amenity where property_id = ? and amenity_name = ?");
+            check_amenity_exists_in_property.setInt(1, property_id);
+            check_amenity_exists_in_property.setString(2, new_amenity);
+            ResultSet result = check_amenity_exists_in_property.executeQuery();
+            if(result.next()){
+                System.out.println("This amenity exists already in this property.");
+                return;
+            } else {
+                System.out.println("This amenity doesn't exist in this property.");
+            }
+            result.close();
+            check_amenity_exists_in_property.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+
+        // checks if the amenity you want to add exists in the amenity table
+        try{
+            PreparedStatement check_amenity_exists = conn.prepareStatement("select * from amenity where amenity_name = ?");
+            check_amenity_exists.setString(1, new_amenity);
+            ResultSet result = check_amenity_exists.executeQuery();
+            // if it exists, adds that amenity directly to that property
+            if(result.next()){
+                amenity_id = result.getInt("amenity_id");
+                try{
+                    PreparedStatement insert_amenity_in_property = conn.prepareStatement("Insert into propertyamenities (property_id, amenity_id) values (?, ?)");
+                    insert_amenity_in_property.setInt(1, property_id);
+                    insert_amenity_in_property.setInt(2, amenity_id);
+                    insert_amenity_in_property.executeUpdate();                   
+                    insert_amenity_in_property.close();
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+                System.out.println("Amenity successfully added to propetry");
+                return;
+            } else {
+                String generatedColumns[] = { "amenity_id"};
+                // inserts amenity in the amenity table
+                try{
+                    PreparedStatement insert_amenity_in_amenity_table = conn.prepareStatement("Insert into amenity (amenity_name) values (?)", generatedColumns);
+                    insert_amenity_in_amenity_table.setString(1, new_amenity);
+                    insert_amenity_in_amenity_table.executeUpdate();   
+                    int new_amenity_id = 0;
+                    try{
+                        ResultSet generatedKeys = insert_amenity_in_amenity_table.getGeneratedKeys();
+                        if(generatedKeys.next()){
+                            new_amenity_id = generatedKeys.getInt(1);
+                        }
+                    } catch(SQLException se){
+                        se.printStackTrace();
+                    }
+                    insert_amenity_in_amenity_table.close();
+                    int amenity_type = 0;
+                    String amenity_accessibility = "";
+                    double monthly_cost = 0;
+                    while(true){
+                        System.out.println("Select if its 1 - Public Amenity \n2 - Private Amenity");
+                        try{
+                            amenity_type = scan.nextInt();
+                                scan.next();
+                                // if its a public amenity, adds to public amenity table
+                                if (amenity_type == 1){
+                                    System.out.println("Please enter the amenity accessibility in the form {hour} AM - {hour} PM. If accessible all day, enter 24 hours");
+                                    amenity_accessibility = scan.nextLine();
+                                    try{
+                                        PreparedStatement insert_public_amenity = conn.prepareStatement("Insert into PublicAmenity (amenity_id, accessibility) values (?, ?)");
+                                        insert_public_amenity.setInt(1, new_amenity_id);
+                                        insert_public_amenity.setString(2, amenity_accessibility);
+                                        insert_public_amenity.executeUpdate();                   
+                                        insert_public_amenity.close();
+                                    } catch(SQLException se){
+                                        se.printStackTrace();
+                                    }
+                                    try{
+                                        PreparedStatement insert_amenity_in_property = conn.prepareStatement("Insert into propertyamenities (property_id, amenity_id) values (?, ?)");
+                                        insert_amenity_in_property.setInt(1, property_id);
+                                        insert_amenity_in_property.setInt(2, new_amenity_id);
+                                        insert_amenity_in_property.executeUpdate();                   
+                                        insert_amenity_in_property.close();
+                                    } catch(SQLException se){
+                                        se.printStackTrace();
+                                    }
+                                    System.out.println("Amenity successfully added to propetry");
+                                    return;
+                                } // if its a private amenity, adds to private amenity table
+                                else if (amenity_type == 2){
+                                    System.out.println("Please enter the monthly cost");
+                                    while(true){
+                                        try{
+                                            monthly_cost = scan.nextDouble();
+                                            break;
+                                        } catch(InputMismatchException e){
+                                            System.out.println(e.getMessage());
+                                            System.out.println("Please enter numeric value");
+                                            scan.next();
+                                        }
+                                    }
+                                    try{
+                                        PreparedStatement insert_private_amenity = conn.prepareStatement("Insert into PrivateAmenity (amenity_id, monthly_cost) values (?, ?)");
+                                        insert_private_amenity.setInt(1, new_amenity_id);
+                                        insert_private_amenity.setDouble(2, monthly_cost);
+                                        insert_private_amenity.executeUpdate();                   
+                                        insert_private_amenity.close();
+                                    } catch(SQLException se){
+                                        se.printStackTrace();
+                                    }
+                                    try{
+                                        PreparedStatement insert_amenity_in_property = conn.prepareStatement("Insert into propertyamenities (property_id, amenity_id) values (?, ?)");
+                                        insert_amenity_in_property.setInt(1, property_id);
+                                        insert_amenity_in_property.setInt(2, new_amenity_id);
+                                        insert_amenity_in_property.executeUpdate();                   
+                                        insert_amenity_in_property.close();
+                                    } catch(SQLException se){
+                                        se.printStackTrace();
+                                    }
+                                    System.out.println("Amenity successfully added to property.");
+                                    return;
+                                } else {
+                                    System.out.println("Please enter a valid integer number between 1 and 2");
+                                    amenity_type = scan.nextInt();
+                                }
+                        } catch(InputMismatchException e){
+                            scan.nextLine();
+                            System.out.println(e.getMessage());
+                            System.out.println("Please enter an integer value");
+                        }
+                    }   
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+            }
+            result.close();
+            check_amenity_exists.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+    }
+
+     // TO DO: print existing amenities from Amenity table
         // TO DO: enter new amenity name & see if its private or public & accordingly add to respective table
         // TO DO: ask which property number u want to put amenity in
             // check if amenity exists in that property
             // if not add it & update propertyamenities table 
             // else say it exists 
-
-    }
-
 
     // in add amenity to lease, loop thru the existing amenities & print them out & ask which one u want to add 
 

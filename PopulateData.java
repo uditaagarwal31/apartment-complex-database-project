@@ -41,19 +41,18 @@ public class PopulateData {
         while(true){
             System.out.println("Welcome to Eastside Uncommons!\n Enter the option which fits your role \n 1 - Property Manager \n 2 - Tenant \n 3 - Financial Manager \n 4 - to exit the program");
             try{
-                if(scan.hasNextInt()){
+                role = scan.nextInt();
+                scan.nextLine();
+                if(role < 0 && role > 4){
+                    System.out.println("Please enter a valid integer number between 1 and 4");
                     role = scan.nextInt();
-                    if(role < 0 && role > 4){
-                        System.out.println("Please enter a valid integer number between 1 and 4");
-                        role = scan.nextInt();
-                    } else {
-                        break;
-                    }
+                } else {
+                    break;
                 }
             } catch(InputMismatchException e){
-                scan.nextLine();
                 System.out.println(e.getMessage());
                 System.out.println("Please enter an integer value");
+                scan.nextLine();
             }
         }
             
@@ -76,11 +75,11 @@ public class PopulateData {
         Scanner scan = new Scanner(System.in);
         
         while(true){
-            System.out.println("Hi property manager!\n Choose the task you want to accomplish today \n 1 - Record visitor data \n 2 - Record lease data \n 3 - Set move-out date \n 4 - Add dependant to a lease \n 5 - To return to the main menu \n 6 - To exit the program");
+            System.out.println("Hi property manager!\n Choose the task you want to accomplish today \n 1 - Record visitor data \n 2 - Record lease data \n 3 - Set move-out date \n 4 - Add dependant to a lease \n 5 - Add amenity to a property \n 6 - To return to the main menu \n 7 - To exit the program");
             try{
                 if(scan.hasNextInt()){
                     option = scan.nextInt();
-                    if(option > 0 && option < 7){
+                    if(option > 0 && option < 8){
                         if(option == 1){
                             manager.recordVistorData(conn);
                         } else if (option == 2){
@@ -90,8 +89,11 @@ public class PopulateData {
                         } else if(option == 4){
                             manager.addDependant(conn);
                         } else if (option == 5){
-                            printRoleMenu(conn);
+                            manager.addAmenityToProperty(conn);
+                            
                         } else if (option == 6){
+                            printRoleMenu(conn);      
+                        } else if(option == 7){
                             System.exit(0);
                         }
                     } else {

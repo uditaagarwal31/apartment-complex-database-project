@@ -399,6 +399,7 @@ public class Tenant {
                                     update_first_name.setInt(2, tenant_id);
                                     update_first_name.executeUpdate();
                                     update_first_name.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }      
@@ -411,6 +412,7 @@ public class Tenant {
                                     update_middle_name.setInt(2, tenant_id);
                                     update_middle_name.executeUpdate();
                                     update_middle_name.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }  
@@ -423,6 +425,7 @@ public class Tenant {
                                     update_last_name.setInt(2, tenant_id);
                                     update_last_name.executeUpdate();
                                     update_last_name.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -435,6 +438,7 @@ public class Tenant {
                                     update_address.setInt(2, tenant_id);
                                     update_address.executeUpdate();
                                     update_address.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -447,6 +451,7 @@ public class Tenant {
                                     update_city.setInt(2, tenant_id);
                                     update_city.executeUpdate();
                                     update_city.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -459,6 +464,7 @@ public class Tenant {
                                     update_state.setInt(2, tenant_id);
                                     update_state.executeUpdate();
                                     update_state.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -471,6 +477,7 @@ public class Tenant {
                                     update_country.setInt(2, tenant_id);
                                     update_country.executeUpdate();
                                     update_country.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -487,6 +494,7 @@ public class Tenant {
                                     update_zipcode.setInt(2, tenant_id);
                                     update_zipcode.executeUpdate();
                                     update_zipcode.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -505,6 +513,7 @@ public class Tenant {
                                     update_phone_num.setInt(2, tenant_id);
                                     update_phone_num.executeUpdate();
                                     update_phone_num.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -523,6 +532,7 @@ public class Tenant {
                                     update_email.setInt(2, tenant_id);
                                     update_email.executeUpdate();
                                     update_email.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -535,6 +545,7 @@ public class Tenant {
                                     update_gender.setInt(2, tenant_id);
                                     update_gender.executeUpdate();
                                     update_gender.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -555,6 +566,7 @@ public class Tenant {
                                     update_pet_status.setInt(2, tenant_id);
                                     update_pet_status.executeUpdate();
                                     update_pet_status.close();
+                                    System.out.println("Update successful!");
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
@@ -776,4 +788,7 @@ public class Tenant {
 // TO DO: validate cash inputs 
 // TO DO: check move out date set between lease expiry & sign date
 // TO DO: check if even 1 paid_date isn't null, it still shows that u have payments due
+// TO DO: payments due with respect to that time 
+// TO DO: late payments
+// TO DO: pet fees 
 // TO DO: add unique constraint to transaction_id/invoice_num 

@@ -5,7 +5,7 @@ PROPERTY
 drop table Property;
 select * from Property;
 create table Property(
-    property_id number(2) generated always as identity,
+    property_id number(4) generated always as identity,
     name varchar(20),
     address varchar(30),
     city char(20),
@@ -25,7 +25,7 @@ AMENITY
 drop table Amenity;
 select * from Amenity;
 create table Amenity(
-    amenity_id number(2) generated always as identity,
+    amenity_id number(4) generated always as identity,
     amenity_name varchar(20),
     primary key(amenity_id)
 );
@@ -43,8 +43,8 @@ insert into Amenity (amenity_name) values ('Babysitting');
 
 PUBLIC AMENITY
 create table PublicAmenity(
-    amenity_id number(2),
-    accessibility char(7),
+    amenity_id number(4),
+    accessibility char(20),
     foreign key(amenity_id) references Amenity
 );
 insert into PublicAmenity (amenity_id, accessibility) values (1, '24/7');
@@ -57,7 +57,7 @@ insert into PublicAmenity (amenity_id, accessibility) values (7, '24/7');
 
 PRIVATE AMENITY 
 create table PrivateAmenity(
-    amenity_id number(2),
+    amenity_id number(4),
     monthly_cost numeric(7,2),
     foreign key(amenity_id) references Amenity
 );
@@ -73,8 +73,8 @@ create table Apartment(
     apt_size int,
     bedroom int,
     bathroom numeric (2,1),
-    property_id number(2),
-    lease_id number(2),
+    property_id number(4),
+    lease_id number(4),
     primary key(apartment_num),
     foreign key(property_id) references Property,
     foreign key(lease_id) references Lease
@@ -90,8 +90,8 @@ insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, 
 
 
 PROSPECTIVETENANT
-create table Tenant(
-    tenant_id number(2) generated always as identity,
+create table PROSPECTIVETENANT(
+    tenant_id number(4) generated always as identity,
     first_name char(20),
     middle_name char(20),
     last_name char(20),
@@ -111,24 +111,24 @@ create table Tenant(
 );
 
 // OUTDATED 
-drop table Tenant;
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Hamlen', 'Rubenchik', 'Dach', '5878 Wayridge Alley', 'Mobile', 'Alabama', 'United States', '36670', '3553131071', 'hdach0@imageshack.us', 92, 'Male', 773, 'yes');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Christye', 'Aucutt', 'Culpin', '6 Lerdahl Pass', 'Macon', 'Georgia', 'United States', '31296', '3037346124', 'cculpin1@networksolutions.com', 94, 'Polygender', 561, 'yes');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Andres', 'Liversage', 'Getcliffe', '571 Grim Point', 'Canton', 'Ohio', 'United States', '44705', '6706153303', 'agetcliffe2@sun.com', 30, 'Male', 542, 'yes');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Damara', 'Bummfrey', 'Follin', '74 Meadow Ridge Road', 'Houston', 'Texas', 'United States', '77035', '9932576069', 'dfollin3@reverbnation.com', 58, 'Female', 652, 'yes');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Eve', 'Hillock', 'Whoolehan', '58250 Nevada Drive', 'Paterson', 'New Jersey', 'United States', '07544', '7113625983', 'ewhoolehan4@cloudflare.com', 100, 'Female', 695, 'no');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Mycah', 'Willowby', 'Kamenar', '44 Twin Pines Avenue', 'Wichita', 'Kansas', 'United States', '67260', '8850138784', 'mkamenar5@pcworld.com', 20, 'Male', 619, 'no');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Bethina', 'Costy', 'Sneezem', '43 Anderson Circle', 'Salt Lake City', 'Utah', 'United States', '84145', '9627533785', 'bsneezem6@comsenz.com', 34, 'Female', 761, 'no');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Stacie', 'Hurnell', 'Cradduck', '7636 Annamark Avenue', 'York', 'Pennsylvania', 'United States', '17405', '5917216827', 'scradduck7@epa.gov', 19, 'Female', 698, 'no');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Allx', 'Semmens', 'Drohun', '12378 Thompson Alley', 'Honolulu', 'Hawaii', 'United States', '96820', '2095676505', 'adrohun8@github.com', 86, 'Female', 767, 'no');
-insert into Tenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Milo', 'Traves', 'Paolinelli', '37 Golf Parkway', 'Boston', 'Massachusetts', 'United States', '02163', '2757842560', 'mpaolinelli9@webs.com', 90, 'Male', 757, 'no');
-select * from Tenant;
+drop table PROSPECTIVETENANT;
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Hamlen', 'Rubenchik', 'Dach', '5878 Wayridge Alley', 'Mobile', 'Alabama', 'United States', '36670', '3553131071', 'hdach0@imageshack.us', 92, 'Male', 773, 'yes');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Christye', 'Aucutt', 'Culpin', '6 Lerdahl Pass', 'Macon', 'Georgia', 'United States', '31296', '3037346124', 'cculpin1@networksolutions.com', 94, 'Polygender', 561, 'yes');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Andres', 'Liversage', 'Getcliffe', '571 Grim Point', 'Canton', 'Ohio', 'United States', '44705', '6706153303', 'agetcliffe2@sun.com', 30, 'Male', 542, 'yes');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Damara', 'Bummfrey', 'Follin', '74 Meadow Ridge Road', 'Houston', 'Texas', 'United States', '77035', '9932576069', 'dfollin3@reverbnation.com', 58, 'Female', 652, 'yes');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Eve', 'Hillock', 'Whoolehan', '58250 Nevada Drive', 'Paterson', 'New Jersey', 'United States', '07544', '7113625983', 'ewhoolehan4@cloudflare.com', 100, 'Female', 695, 'no');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Mycah', 'Willowby', 'Kamenar', '44 Twin Pines Avenue', 'Wichita', 'Kansas', 'United States', '67260', '8850138784', 'mkamenar5@pcworld.com', 20, 'Male', 619, 'no');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Bethina', 'Costy', 'Sneezem', '43 Anderson Circle', 'Salt Lake City', 'Utah', 'United States', '84145', '9627533785', 'bsneezem6@comsenz.com', 34, 'Female', 761, 'no');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Stacie', 'Hurnell', 'Cradduck', '7636 Annamark Avenue', 'York', 'Pennsylvania', 'United States', '17405', '5917216827', 'scradduck7@epa.gov', 19, 'Female', 698, 'no');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Allx', 'Semmens', 'Drohun', '12378 Thompson Alley', 'Honolulu', 'Hawaii', 'United States', '96820', '2095676505', 'adrohun8@github.com', 86, 'Female', 767, 'no');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Milo', 'Traves', 'Paolinelli', '37 Golf Parkway', 'Boston', 'Massachusetts', 'United States', '02163', '2757842560', 'mpaolinelli9@webs.com', 90, 'Male', 757, 'no');
+select * from PROSPECTIVETENANT;
 
 
 
 DEPENDANT
 create table Dependant(
-    tenant_id number(2),
+    tenant_id number(4),
     first_name char(20),
     last_name char(20),
     foreign key(tenant_id) references Tenant
@@ -143,7 +143,7 @@ insert into Dependant (tenant_id, first_name, last_name) values (7, 'Carter', 'W
 
 LEASE
 create table Lease(
-    lease_id number(2) generated always as identity,
+    lease_id number(4) generated always as identity,
     monthly_rent numeric(6,2),
     lease_term int,
     security_deposit numeric(6,2),
@@ -168,7 +168,7 @@ PAYMENT
 drop table Payment;
 create table Payment(
     invoice_num number(4) generated always as identity,
-    lease_id number(2),
+    lease_id number(4),
     date_due DATE,
     date_paid DATE,
     total_due numeric (8,2),
@@ -187,7 +187,7 @@ select * from payment;
 
 PAYMENT METHOD
 create table PaymentMethod(
-    transaction_id number(2) generated always as identity,
+    transaction_id number(4) generated always as identity,
     invoice_num number(4),
     primary key(transaction_id),
     foreign key(invoice_num) references Payment
@@ -202,7 +202,7 @@ insert into PaymentMethod (invoice_num) values (2);
 
 CASH
 create table Cash(
-    transaction_id number(2),
+    transaction_id number(4),
     num_hundred_bills int,
     num_fifty_bills int,
     num_twenty_bills int,
@@ -218,7 +218,7 @@ insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty
 
 CARD
 create table Card(
-    transaction_id number(2),
+    transaction_id number(4),
     card_num char(16),
     card_name char(30),
     expiry char(4),
@@ -232,8 +232,8 @@ insert into Card (transaction_id ,card_num, card_name, expiry) values (6, '26587
 
 TENANT
 create table tenant(
-    lease_id number(2),
-    tenant_id number(2),
+    lease_id number(4),
+    tenant_id number(4),
     foreign key(lease_id) references Lease,
     foreign key(tenant_id) references Tenant
 );
@@ -248,8 +248,8 @@ insert into tenant (lease_id ,tenant_id) values ('1', '7');
 
 LEASEAMENITIES
 create table leaseamenities(
-    lease_id number(2),
-    amenity_id number(2),
+    lease_id number(4),
+    amenity_id number(4),
     foreign key(lease_id) references Lease,
     foreign key(amenity_id) references Amenity
 );
@@ -260,8 +260,8 @@ insert into leaseamenities (lease_id ,amenity_id) values ('65', '10');
 
 PROPERTYAMENITIES
 create table propertyamenities(
-    property_id number(2),
-    amenity_id number(2)
+    property_id number(4),
+    amenity_id number(4)
     foreign key(property_id) references Property,
     foreign key(amenity_id) references Amenity
 );
