@@ -174,7 +174,7 @@ public class Tenant {
                 System.out.println("Enter 2 to make the payment now");
                 user_wants_to_pay_now = scan.nextInt();
                 if(user_wants_to_pay_now == 2){
-                    makeRentalPayment(conn, invoice_num, total_due, payment_date, invoices_for_tenant);
+                    makeRentalPayment(conn, total_due, payment_date, invoices_for_tenant);
                 }
             }
         } catch(SQLException se){
@@ -183,7 +183,7 @@ public class Tenant {
     }
 
     // TO DO: check for late payment against payment date & add the fee 
-    public static void makeRentalPayment(Connection conn, int invoice_num, double total_due, String payment_date){
+    public static void makeRentalPayment(Connection conn, double total_due, String payment_date, HashSet<Integer> invoices_for_tenant){
         Scanner scan = new Scanner(System.in);
         // if(invoice_num == 0 || total_due == 0){
         //     System.out.println("Enter your tenant id");
@@ -205,6 +205,31 @@ public class Tenant {
         //     }
         // } 
         
+        int invoice_num_payment_for = 0;
+        while(true){
+            System.out.println("Enter the invoice number you want to make the payment for");           
+            try{
+                invoice_num_payment_for = scan.nextInt();
+                scan.nextLine();
+                if(!invoices_for_tenant.contains(invoice_num_payment_for)){
+                    System.out.println("Please enter a valid invoice number from the following:");
+                    for(int i: invoices_for_tenant){
+                        System.out.println(i);
+                    }
+                    invoice_num_payment_for = scan.nextInt();
+                } else {
+                    break;
+                }
+            } catch(InputMismatchException e){
+                System.out.println(e.getMessage());
+                System.out.println("Please enter an integer value");
+                scan.nextLine();
+            }
+        }
+        
+        
+
+        
        
         System.out.println("Choose your payment method. Choose 1 - Card \n 2 - Cash");
         int payment_method_choice = scan.nextInt();
@@ -214,7 +239,7 @@ public class Tenant {
         String generatedColumns[] = { "transaction_id" };
         try{
             PreparedStatement insert_payment_method = conn.prepareStatement("Insert into PaymentMethod (invoice_num) values (?)", generatedColumns);
-            insert_payment_method.setInt(1, invoice_num);
+            insert_payment_method.setInt(1, invoice_num_payment_for);
             insert_payment_method.executeUpdate();
              // card
             if(payment_method_choice == 1){
@@ -337,8 +362,8 @@ public class Tenant {
                 PreparedStatement update_paid_date = conn.prepareStatement("Update Payment set date_paid = to_date(?,'mm-dd-yyyy') WHERE invoice_num=?");
                 update_paid_date.setString(1, payment_date);
                 System.out.println("updated payment date" + payment_date);
-                update_paid_date.setInt(2, invoice_num_associated_with_payment);
-                System.out.println("updated invoice num" + invoice_num_associated_with_payment);
+                update_paid_date.setInt(2, invoice_num_payment_for);
+                System.out.println("updated invoice num" + invoice_num_payment_for);
                 update_paid_date.executeUpdate();
                 update_paid_date.close();
             } catch(SQLException se){
