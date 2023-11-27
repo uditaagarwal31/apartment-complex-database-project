@@ -5,15 +5,6 @@ import java.util.*;
 public class PopulateData {
     static final String DB_URL = "jdbc:oracle:thin:@edgar1.cse.lehigh.edu:1521:cse241";
 
-    // OH QUESTIONS
-    // 1. tenant select prepared statement not working for record visitor data & add dependant
-    // 2. what exactly do you mean by record lease data? show the available apartments such as 2 bedroom, etc and the property manager can choose
-    // in record moveout do i just drop that row containing that lease_id from apartment - no don't drop
-    // 3. is it okay if i don't consider pets as tenants? yes 
-    // 4. i'm not really using amenities here 
-    // property manager can add amenities. you list existing ones & can add. for tenant tenant can add private amenities 
-
-
     public static void main(String[] args){
         Connection conn = DatabaseConnectionManager.connectToDatabase();
         Scanner scan = new Scanner(System.in);
@@ -63,7 +54,8 @@ public class PopulateData {
             Tenant tenant = new Tenant();
             tenantMenu(conn, tenant);
         } else if(role == 3){
-            financialManagerMenu(conn);
+            FinancialManager financialmanager = new FinancialManager();
+            financialManagerMenu(conn, financialmanager);
         } else if (role == 4){
             System.exit(0);
         }
@@ -145,7 +137,7 @@ public class PopulateData {
     }
     
 
-    public static void financialManagerMenu(Connection conn){
+    public static void financialManagerMenu(Connection conn, FinancialManager financialManager){
         int option;
         Scanner scan = new Scanner(System.in);
         
@@ -155,7 +147,7 @@ public class PopulateData {
                 if(scan.hasNextInt()){
                     option = scan.nextInt();
                     if (option == 1){
-                        System.out.println("financial report");
+                        financialManager.financialReport(conn);
                     } else if (option == 2){
                         printRoleMenu(conn);
                     } else if (option == 3){

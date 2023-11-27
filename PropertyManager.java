@@ -298,7 +298,7 @@ public class PropertyManager {
                 }
                 char c = last_apartment_num_set.charAt(2);
                 int actual_apt_num = Character.getNumericValue(c);
-                if (actual_apt_num >= 5) {
+                if (actual_apt_num >= 9) {
                     System.out.println("Sorry we don't have any apartments of this type available in this property at the moment. Choose a different apartment style or property or try again after a few months.");
                     return;
                 } else {
