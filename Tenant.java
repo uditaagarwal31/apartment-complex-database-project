@@ -108,12 +108,15 @@ public class Tenant {
         String date_due_check = "";
         int month = Integer.valueOf(payment_date.substring(0, 2));
         int actual_date = Integer.valueOf(payment_date.substring(3, 5));
+        HashSet<Integer> invoices_for_tenant = new HashSet<>();
+
+      //  int late_payment_invoice = 0;
         try{
             PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
             getAllPayments.setInt(1, tenant_id);
             ResultSet payments = getAllPayments.executeQuery();
             int has_payment_due = 0;
-            boolean late_payment = false;
+          //  boolean late_payment = false;
             while(payments.next()){
                 date_due = payments.getString("date_due");
                 date_paid = payments.getString("date_paid");
@@ -121,29 +124,46 @@ public class Tenant {
                 invoice_num = payments.getInt("invoice_num");
                 if(Integer.valueOf(date_due.substring(5, 7)) == month && date_paid == null){
                     System.out.println("You have $" + total_due + " due by " + date_due + ".");
+                    System.out.println("Invoice num" + invoice_num);
+                    invoices_for_tenant.add(invoice_num);
                     date_due_check = date_due;
                     has_payment_due = 1;
                     if(Integer.valueOf(date_due.substring(8, 10)) < actual_date){
                         System.out.println("You are paying late. Late fee of $50 will be added to your bill.");
                         System.out.println("Your new total is $" + (total_due + 50));
-                        System.out.println("invoice num " + invoice_num);
-                        late_payment = true;
+                        System.out.println("invoice num associated with late payment" + invoice_num);
+                        //late_payment_invoice = invoice_num;
+                       // late_payment = true;
+                        try{
+                            total_due = total_due+50;
+                            PreparedStatement late_payment_update = conn.prepareStatement("Update Payment set total_due = ? WHERE invoice_num=?");
+                            late_payment_update.setDouble(1, total_due);
+                            late_payment_update.setInt(2, invoice_num);
+                            System.out.println("new total due" + total_due);
+                            System.out.println("invoice update" + invoice_num);
+                            late_payment_update.executeUpdate();
+                            late_payment_update.close();
+                        } catch(SQLException se){
+                            se.printStackTrace();
+                        }
                     }
                 }
             }
-            if(late_payment){ // TO DO: fix bug
-                try{
-                    total_due = total_due+50;
-                    PreparedStatement late_payment_update = conn.prepareStatement("Update Payment set total_due = ? WHERE invoice_num=?");
-                    late_payment_update.setDouble(1, total_due);
-                    late_payment_update.setInt(2, invoice_num);
-                    late_payment_update.executeUpdate();
-                    late_payment_update.close();
-                    System.out.println("here ");
-                } catch(SQLException se){
-                    se.printStackTrace();
-                }
-            }
+            // if(late_payment){ // TO DO: fix bug
+            //     try{
+            //         total_due = total_due+50;
+            //         PreparedStatement late_payment_update = conn.prepareStatement("Update Payment set total_due = ? WHERE invoice_num=?");
+            //         late_payment_update.setDouble(1, total_due);
+            //         late_payment_update.setInt(2, invoice_num);
+            //         System.out.println("new total due" + total_due);
+            //         System.out.println("invoice update" + invoice_num);
+            //         late_payment_update.executeUpdate();
+            //         late_payment_update.close();
+            //         System.out.println("here ");
+            //     } catch(SQLException se){
+            //         se.printStackTrace();
+            //     }
+            // }
             payments.close();
             getAllPayments.close();
             
@@ -154,7 +174,7 @@ public class Tenant {
                 System.out.println("Enter 2 to make the payment now");
                 user_wants_to_pay_now = scan.nextInt();
                 if(user_wants_to_pay_now == 2){
-                    makeRentalPayment(conn, invoice_num, total_due, payment_date);
+                    makeRentalPayment(conn, invoice_num, total_due, payment_date, invoices_for_tenant);
                 }
             }
         } catch(SQLException se){
@@ -165,31 +185,32 @@ public class Tenant {
     // TO DO: check for late payment against payment date & add the fee 
     public static void makeRentalPayment(Connection conn, int invoice_num, double total_due, String payment_date){
         Scanner scan = new Scanner(System.in);
-        if(invoice_num == 0 || total_due == 0){
-            System.out.println("Enter your tenant id");
-            int tenant_id = scan.nextInt();
-            try{
-                PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
-                getAllPayments.setInt(1, tenant_id);
-                ResultSet payments = getAllPayments.executeQuery();
+        // if(invoice_num == 0 || total_due == 0){
+        //     System.out.println("Enter your tenant id");
+        //     int tenant_id = scan.nextInt();
+        //     try{
+        //         PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
+        //         getAllPayments.setInt(1, tenant_id);
+        //         ResultSet payments = getAllPayments.executeQuery();
             
-                while(payments.next()){                  
-                    invoice_num = payments.getInt("invoice_num");
-                    total_due = payments.getDouble("total_due");
-                }
-                payments.close();
-                getAllPayments.close();
-            } catch(SQLException se){
-            se.printStackTrace();
-            return;
-            }
-        } 
+        //         while(payments.next()){                  
+        //             invoice_num = payments.getInt("invoice_num");
+        //             total_due = payments.getDouble("total_due");
+        //         }
+        //         payments.close();
+        //         getAllPayments.close();
+        //     } catch(SQLException se){
+        //     se.printStackTrace();
+        //     return;
+        //     }
+        // } 
         
        
         System.out.println("Choose your payment method. Choose 1 - Card \n 2 - Cash");
         int payment_method_choice = scan.nextInt();
         scan.nextLine();
         int transaction_id = 0;
+     //   int invoice_num_associated_with_payment = invoice_num;
         String generatedColumns[] = { "transaction_id" };
         try{
             PreparedStatement insert_payment_method = conn.prepareStatement("Insert into PaymentMethod (invoice_num) values (?)", generatedColumns);
@@ -315,7 +336,9 @@ public class Tenant {
             try{
                 PreparedStatement update_paid_date = conn.prepareStatement("Update Payment set date_paid = to_date(?,'mm-dd-yyyy') WHERE invoice_num=?");
                 update_paid_date.setString(1, payment_date);
-                update_paid_date.setInt(2, invoice_num);
+                System.out.println("updated payment date" + payment_date);
+                update_paid_date.setInt(2, invoice_num_associated_with_payment);
+                System.out.println("updated invoice num" + invoice_num_associated_with_payment);
                 update_paid_date.executeUpdate();
                 update_paid_date.close();
             } catch(SQLException se){
