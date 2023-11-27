@@ -66,10 +66,10 @@ public class Tenant {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter your tenant id");
         int tenant_id = scan.nextInt();
+        scan.nextLine();
         String date_due = "";
         String date_paid = "";
         double total_due = 0;
-        int has_payment_due = 0;
         int user_wants_to_pay_now = 0;
         int invoice_num = 0;
 
@@ -93,38 +93,77 @@ public class Tenant {
                 se.printStackTrace();
             }
         }
-        
+
+        String payment_date = "";
+        while(true){
+            System.out.println("Enter today's date in the form MM-DD-YYYY");
+            payment_date = scan.nextLine();
+            boolean verdict = isValidDate(payment_date);
+            if (verdict) {
+                break;
+            } else{
+                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
+            }
+        }
+        String date_due_check = "";
+        int month = Integer.valueOf(payment_date.substring(0, 2));
+        int actual_date = Integer.valueOf(payment_date.substring(3, 5));
         try{
             PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
             getAllPayments.setInt(1, tenant_id);
             ResultSet payments = getAllPayments.executeQuery();
-            
+            int has_payment_due = 0;
+            boolean late_payment = false;
             while(payments.next()){
                 date_due = payments.getString("date_due");
                 date_paid = payments.getString("date_paid");
                 total_due = payments.getDouble("total_due");
                 invoice_num = payments.getInt("invoice_num");
-                has_payment_due = 1;
+                if(Integer.valueOf(date_due.substring(5, 7)) == month && date_paid == null){
+                    System.out.println("You have $" + total_due + " due by " + date_due + ".");
+                    date_due_check = date_due;
+                    has_payment_due = 1;
+                    if(Integer.valueOf(date_due.substring(8, 10)) < actual_date){
+                        System.out.println("You are paying late. Late fee of $50 will be added to your bill.");
+                        System.out.println("Your new total is $" + (total_due + 50));
+                        System.out.println("invoice num " + invoice_num);
+                        late_payment = true;
+                    }
+                }
             }
-            
-            if(date_paid != null){
-                System.out.println("You don't have any payments due at this time. You're upto date with all your payments!");
-            } else {
-                System.out.println("You have $" + total_due + " due by " + date_due + ".");
-                System.out.println("Enter 2 to make the payment now");
-                user_wants_to_pay_now = scan.nextInt();
-                if(user_wants_to_pay_now == 2){
-                    makeRentalPayment(conn, invoice_num, total_due);
+            if(late_payment){ // TO DO: fix bug
+                try{
+                    total_due = total_due+50;
+                    PreparedStatement late_payment_update = conn.prepareStatement("Update Payment set total_due = ? WHERE invoice_num=?");
+                    late_payment_update.setDouble(1, total_due);
+                    late_payment_update.setInt(2, invoice_num);
+                    late_payment_update.executeUpdate();
+                    late_payment_update.close();
+                    System.out.println("here ");
+                } catch(SQLException se){
+                    se.printStackTrace();
                 }
             }
             payments.close();
             getAllPayments.close();
+            
+
+            if(has_payment_due == 0){
+                System.out.println("You don't have any payments due at this time for this month. You're upto date with all your payments!");
+            } else {
+                System.out.println("Enter 2 to make the payment now");
+                user_wants_to_pay_now = scan.nextInt();
+                if(user_wants_to_pay_now == 2){
+                    makeRentalPayment(conn, invoice_num, total_due, payment_date);
+                }
+            }
         } catch(SQLException se){
             se.printStackTrace();
         }
     }
 
-    public static void makeRentalPayment(Connection conn, int invoice_num, double total_due){
+    // TO DO: check for late payment against payment date & add the fee 
+    public static void makeRentalPayment(Connection conn, int invoice_num, double total_due, String payment_date){
         Scanner scan = new Scanner(System.in);
         if(invoice_num == 0 || total_due == 0){
             System.out.println("Enter your tenant id");
@@ -146,17 +185,7 @@ public class Tenant {
             }
         } 
         
-        String payment_date = "";
-        while(true){
-            System.out.println("Enter today's date in the form MM-DD-YYYY");
-            payment_date = scan.nextLine();
-            boolean verdict = isValidDate(payment_date);
-            if (verdict) {
-                break;
-            } else{
-                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
-            }
-        }
+       
         System.out.println("Choose your payment method. Choose 1 - Card \n 2 - Cash");
         int payment_method_choice = scan.nextInt();
         scan.nextLine();
@@ -705,8 +734,6 @@ public class Tenant {
 
 // TO DO: validate cash inputs 
 // TO DO: check move out date set between lease expiry & sign date
-// TO DO: check if even 1 paid_date isn't null, it still shows that u have payments due
-// TO DO: payments due with respect to that time 
-// TO DO: late payments
+// TO DO: check for late payments with respect to due date & if yes add late payment fees & update tables
 // TO DO: pet fees 
 // TO DO: add unique constraint to transaction_id/invoice_num 
