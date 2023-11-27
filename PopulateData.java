@@ -34,7 +34,7 @@ public class PopulateData {
             try{
                 role = scan.nextInt();
                 scan.nextLine();
-                if(role < 0 && role > 4){
+                if(role < 0 || role > 4){
                     System.out.println("Please enter a valid integer number between 1 and 4");
                     role = scan.nextInt();
                 } else {
