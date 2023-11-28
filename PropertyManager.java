@@ -179,6 +179,7 @@ public class PropertyManager {
     public void recordLeaseData(Connection conn){
         Scanner scan = new Scanner(System.in);
         int tenant_id = 0;
+        String has_pet = "";
         while(true){
             System.out.println("Input tenant id");
             tenant_id = scan.nextInt();
@@ -191,6 +192,8 @@ public class PropertyManager {
                 if(!result.next()){
                     System.out.println("Invalid tenant id. This tenant does not exist. Please enter a valid id.");
                 } else{
+                    has_pet = result.getString("has_pet");
+                    System.out.println("this tenants pet status " + has_pet);
                     break;
                 }
                 result.close();
@@ -371,6 +374,21 @@ public class PropertyManager {
             first_month_rent_pay.close();
         } catch(SQLException se){
             se.printStackTrace();
+        }
+
+        if(has_pet.equalsIgnoreCase("yes")){
+            System.out.println("Since you have a pet, you will have to pay a one time pet fee of $300 due today.");
+            try{
+                PreparedStatement pet_fees_pay = conn.prepareStatement("Insert into Payment (lease_id, date_due, date_paid, total_due) values (?, to_date(?,'mm-dd-yyyy'), ?,  ?)");
+                pet_fees_pay.setInt(1, lease_id);
+                pet_fees_pay.setString(2, date_signed);
+                pet_fees_pay.setString(3, date_paid);
+                pet_fees_pay.setDouble(4, 300);
+                pet_fees_pay.executeUpdate();                   
+                pet_fees_pay.close();
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
         }
 
         int month_copy_current_yr = month + 1;

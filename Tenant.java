@@ -799,4 +799,3 @@ public class Tenant {
 // TO DO: check move out date set between lease expiry & sign date
 // TO DO: pet fees 
 // TO DO: add unique constraint to transaction_id/invoice_num
-// TO DO: validate int input issues  
