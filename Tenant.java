@@ -159,7 +159,6 @@ public class Tenant {
         }
     }
 
-    // TO DO: check for late payment against payment date & add the fee 
     public static void makeRentalPayment(Connection conn, String payment_date, HashSet<Integer> invoices_for_tenant){
         Scanner scan = new Scanner(System.in);
         int invoice_num_payment_for = 0;
@@ -177,8 +176,7 @@ public class Tenant {
                     break;
                 }
             } catch(InputMismatchException e){
-                System.out.println(e.getMessage());
-                System.out.println("Please enter an integer value");
+                System.out.println("Please enter an integer value.");
                 scan.nextLine();
             }
         }
@@ -471,221 +469,213 @@ public class Tenant {
                 while(true){
                     System.out.println("\nEnter 1 - If you want to update your information \n2 - To return to the tenant menu");
                     try{
-                        if(scan.hasNextInt()){
-                            choice = scan.nextInt();
-                            if (choice == 1){
-                                break;
-                            } else if (choice == 2){
-                                return;
-                            } 
+                        choice = scan.nextInt();
+                        scan.nextLine();
+                        if (choice == 1){
+                            break;
+                        } else if (choice == 2){
+                            return;
                         } else {
                             System.out.println("Invalid input. Try again. ");
-                            choice = scan.nextInt();
                         }
                     } catch(InputMismatchException e){
-                        scan.nextLine();
-                        System.out.println(e.getMessage());
                         System.out.println("Please enter an integer value");
+                        scan.nextLine();
                     }
                 }
-                System.out.println("yo");
                 while(true){
                     System.out.println("Select what information you'd like to update.\n 1 - Update first name \n 2 - Update middle name \n 3 - Update last name \n 4 - Update address \n 5 - Update city \n 6 - Update state \n 7 - Update country \n 8 - Update zipcode \n 9 - Update phone number \n 10 - Update email ID \n 11 - Update gender \n 12 - Update pet status \n 13 - Return to menu");
                     try{
-                        if(scan.hasNextInt()){
-                            choice = scan.nextInt();
-                            scan.nextLine();
-                            if (choice == 1){
-                                System.out.println("Enter your updated first name");
-                                first_name = scan.nextLine();
-                                try{
-                                    PreparedStatement update_first_name = conn.prepareStatement("Update ProspectiveTenant set first_name = ? WHERE tenant_id=?");
-                                    update_first_name.setString(1, first_name);
-                                    update_first_name.setInt(2, tenant_id);
-                                    update_first_name.executeUpdate();
-                                    update_first_name.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }      
-                            } else if (choice == 2){
-                                System.out.println("Enter your updated middle name");
-                                middle_name = scan.nextLine();
-                                try{
-                                    PreparedStatement update_middle_name = conn.prepareStatement("Update ProspectiveTenant set middle_name = ? WHERE tenant_id=?");
-                                    update_middle_name.setString(1, middle_name);
-                                    update_middle_name.setInt(2, tenant_id);
-                                    update_middle_name.executeUpdate();
-                                    update_middle_name.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }  
-                            } else if (choice == 3){
-                                System.out.println("Enter your updated last name");
-                                last_name = scan.nextLine();
-                                try{
-                                    PreparedStatement update_last_name = conn.prepareStatement("Update ProspectiveTenant set last_name = ? WHERE tenant_id=?");
-                                    update_last_name.setString(1, last_name);
-                                    update_last_name.setInt(2, tenant_id);
-                                    update_last_name.executeUpdate();
-                                    update_last_name.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 4){
-                                System.out.println("Enter your updated address");
-                                address = scan.nextLine();
-                                try{
-                                    PreparedStatement update_address = conn.prepareStatement("Update ProspectiveTenant set address = ? WHERE tenant_id=?");
-                                    update_address.setString(1, address);
-                                    update_address.setInt(2, tenant_id);
-                                    update_address.executeUpdate();
-                                    update_address.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 5){
-                                System.out.println("Enter your updated city");
-                                city = scan.nextLine();
-                                try{
-                                    PreparedStatement update_city = conn.prepareStatement("Update ProspectiveTenant set city = ? WHERE tenant_id=?");
-                                    update_city.setString(1, city);
-                                    update_city.setInt(2, tenant_id);
-                                    update_city.executeUpdate();
-                                    update_city.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 6){
-                                System.out.println("Enter your updated state");
-                                state = scan.nextLine();
-                                try{
-                                    PreparedStatement update_state = conn.prepareStatement("Update ProspectiveTenant set state = ? WHERE tenant_id=?");
-                                    update_state.setString(1, state);
-                                    update_state.setInt(2, tenant_id);
-                                    update_state.executeUpdate();
-                                    update_state.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 7){
-                                System.out.println("Enter your updated country");
-                                country = scan.nextLine();
-                                try{
-                                    PreparedStatement update_country = conn.prepareStatement("Update ProspectiveTenant set country = ? WHERE tenant_id=?");
-                                    update_country.setString(1, country);
-                                    update_country.setInt(2, tenant_id);
-                                    update_country.executeUpdate();
-                                    update_country.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 8){
-                                System.out.println("Enter your updated zipcode");
+                        choice = scan.nextInt();
+                        scan.nextLine();
+                        if (choice == 1){
+                            System.out.println("Enter your updated first name");
+                            first_name = scan.nextLine();
+                            try{
+                                PreparedStatement update_first_name = conn.prepareStatement("Update ProspectiveTenant set first_name = ? WHERE tenant_id=?");
+                                update_first_name.setString(1, first_name);
+                                update_first_name.setInt(2, tenant_id);
+                                update_first_name.executeUpdate();
+                                update_first_name.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }      
+                        } else if (choice == 2){
+                            System.out.println("Enter your updated middle name");
+                            middle_name = scan.nextLine();
+                            try{
+                                PreparedStatement update_middle_name = conn.prepareStatement("Update ProspectiveTenant set middle_name = ? WHERE tenant_id=?");
+                                update_middle_name.setString(1, middle_name);
+                                update_middle_name.setInt(2, tenant_id);
+                                update_middle_name.executeUpdate();
+                                update_middle_name.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }  
+                        } else if (choice == 3){
+                            System.out.println("Enter your updated last name");
+                            last_name = scan.nextLine();
+                            try{
+                                PreparedStatement update_last_name = conn.prepareStatement("Update ProspectiveTenant set last_name = ? WHERE tenant_id=?");
+                                update_last_name.setString(1, last_name);
+                                update_last_name.setInt(2, tenant_id);
+                                update_last_name.executeUpdate();
+                                update_last_name.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 4){
+                            System.out.println("Enter your updated address");
+                            address = scan.nextLine();
+                            try{
+                                PreparedStatement update_address = conn.prepareStatement("Update ProspectiveTenant set address = ? WHERE tenant_id=?");
+                                update_address.setString(1, address);
+                                update_address.setInt(2, tenant_id);
+                                update_address.executeUpdate();
+                                update_address.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 5){
+                            System.out.println("Enter your updated city");
+                            city = scan.nextLine();
+                            try{
+                                PreparedStatement update_city = conn.prepareStatement("Update ProspectiveTenant set city = ? WHERE tenant_id=?");
+                                update_city.setString(1, city);
+                                update_city.setInt(2, tenant_id);
+                                update_city.executeUpdate();
+                                update_city.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 6){
+                            System.out.println("Enter your updated state");
+                            state = scan.nextLine();
+                            try{
+                                PreparedStatement update_state = conn.prepareStatement("Update ProspectiveTenant set state = ? WHERE tenant_id=?");
+                                update_state.setString(1, state);
+                                update_state.setInt(2, tenant_id);
+                                update_state.executeUpdate();
+                                update_state.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 7){
+                            System.out.println("Enter your updated country");
+                            country = scan.nextLine();
+                            try{
+                                PreparedStatement update_country = conn.prepareStatement("Update ProspectiveTenant set country = ? WHERE tenant_id=?");
+                                update_country.setString(1, country);
+                                update_country.setInt(2, tenant_id);
+                                update_country.executeUpdate();
+                                update_country.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 8){
+                            System.out.println("Enter your updated zipcode");
+                            zipcode = scan.nextLine();
+                            while(zipcode.length() != 5){
+                                System.out.println("Invalid zipcode. Please enter a valid 5 digit zipcode");
                                 zipcode = scan.nextLine();
-                                while(zipcode.length() != 5){
-                                    System.out.println("Invalid zipcode. Please enter a valid 5 digit zipcode");
-                                    zipcode = scan.nextLine();
-                                }
-                                try{
-                                    PreparedStatement update_zipcode = conn.prepareStatement("Update ProspectiveTenant set zipcode = ? WHERE tenant_id=?");
-                                    update_zipcode.setString(1, zipcode);
-                                    update_zipcode.setInt(2, tenant_id);
-                                    update_zipcode.executeUpdate();
-                                    update_zipcode.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 9){
-                                System.out.println("Enter your updated phone number (without any special characters)");
+                            }
+                            try{
+                                PreparedStatement update_zipcode = conn.prepareStatement("Update ProspectiveTenant set zipcode = ? WHERE tenant_id=?");
+                                update_zipcode.setString(1, zipcode);
+                                update_zipcode.setInt(2, tenant_id);
+                                update_zipcode.executeUpdate();
+                                update_zipcode.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 9){
+                            System.out.println("Enter your updated phone number (without any special characters)");
+                            phone_num = scan.nextLine();
+                            phone_num = phone_num.replaceAll("[^0-9]","");
+                            while(phone_num.length() != 10){
+                                System.out.println("Invalid phone number. Please enter a valid 10 digit number");
                                 phone_num = scan.nextLine();
                                 phone_num = phone_num.replaceAll("[^0-9]","");
-                                while(phone_num.length() != 10){
-                                    System.out.println("Invalid phone number. Please enter a valid 10 digit number");
-                                    phone_num = scan.nextLine();
-                                    phone_num = phone_num.replaceAll("[^0-9]","");
-                                }
-                                try{
-                                    PreparedStatement update_phone_num = conn.prepareStatement("Update ProspectiveTenant set phone_num = ? WHERE tenant_id=?");
-                                    update_phone_num.setString(1, phone_num);
-                                    update_phone_num.setInt(2, tenant_id);
-                                    update_phone_num.executeUpdate();
-                                    update_phone_num.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if(choice == 10){
-                                System.out.println("Enter your updated email ID");
+                            }
+                            try{
+                                PreparedStatement update_phone_num = conn.prepareStatement("Update ProspectiveTenant set phone_num = ? WHERE tenant_id=?");
+                                update_phone_num.setString(1, phone_num);
+                                update_phone_num.setInt(2, tenant_id);
+                                update_phone_num.executeUpdate();
+                                update_phone_num.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if(choice == 10){
+                            System.out.println("Enter your updated email ID");
+                            email_id = scan.nextLine();
+                            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$"; // reference: https://www.geeksforgeeks.org/check-email-address-valid-not-java/
+                            Pattern pat = Pattern.compile(emailRegex); 
+                            while(!pat.matcher(email_id).matches()){
+                                System.out.println("Invalid email id. Please enter a valid email.");
                                 email_id = scan.nextLine();
-                                String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$"; // reference: https://www.geeksforgeeks.org/check-email-address-valid-not-java/
-                                Pattern pat = Pattern.compile(emailRegex); 
-                                while(!pat.matcher(email_id).matches()){
-                                    System.out.println("Invalid email id. Please enter a valid email.");
-                                    email_id = scan.nextLine();
-                                }
-                                try{
-                                    PreparedStatement update_email = conn.prepareStatement("Update ProspectiveTenant set email = ? WHERE tenant_id=?");
-                                    update_email.setString(1, email_id);
-                                    update_email.setInt(2, tenant_id);
-                                    update_email.executeUpdate();
-                                    update_email.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 11){
-                                System.out.println("Enter your updated gender");
-                                gender = scan.nextLine();
-                                try{
-                                    PreparedStatement update_gender = conn.prepareStatement("Update ProspectiveTenant set gender = ? WHERE tenant_id=?");
-                                    update_gender.setString(1, gender);
-                                    update_gender.setInt(2, tenant_id);
-                                    update_gender.executeUpdate();
-                                    update_gender.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
                             }
-                            else if (choice == 12){
-                                System.out.println("Enter your updated pet status");
+                            try{
+                                PreparedStatement update_email = conn.prepareStatement("Update ProspectiveTenant set email = ? WHERE tenant_id=?");
+                                update_email.setString(1, email_id);
+                                update_email.setInt(2, tenant_id);
+                                update_email.executeUpdate();
+                                update_email.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 11){
+                            System.out.println("Enter your updated gender");
+                            gender = scan.nextLine();
+                            try{
+                                PreparedStatement update_gender = conn.prepareStatement("Update ProspectiveTenant set gender = ? WHERE tenant_id=?");
+                                update_gender.setString(1, gender);
+                                update_gender.setInt(2, tenant_id);
+                                update_gender.executeUpdate();
+                                update_gender.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 12){
+                            System.out.println("Enter your updated pet status");
+                            has_pet = scan.nextLine();
+                            while (true) {
+                                if(has_pet.equalsIgnoreCase("yes") || has_pet.equalsIgnoreCase("no")){
+                                    break;
+                                } 
+                                System.out.println("Invalid input. Please enter yes or no");
                                 has_pet = scan.nextLine();
-                                while (true) {
-                                    if(has_pet.equalsIgnoreCase("yes") || has_pet.equalsIgnoreCase("no")){
-                                        break;
-                                    } 
-                                    System.out.println("Invalid input. Please enter yes or no");
-                                    has_pet = scan.nextLine();
-                                }
-                                try{
-                                    PreparedStatement update_pet_status = conn.prepareStatement("Update ProspectiveTenant set has_pet = ? WHERE tenant_id=?");
-                                    update_pet_status.setString(1, has_pet);
-                                    update_pet_status.setInt(2, tenant_id);
-                                    update_pet_status.executeUpdate();
-                                    update_pet_status.close();
-                                    System.out.println("Update successful!");
-                                } catch(SQLException se){
-                                    se.printStackTrace();
-                                }
-                            } else if (choice == 13){
-                                return;
                             }
+                            try{
+                                PreparedStatement update_pet_status = conn.prepareStatement("Update ProspectiveTenant set has_pet = ? WHERE tenant_id=?");
+                                update_pet_status.setString(1, has_pet);
+                                update_pet_status.setInt(2, tenant_id);
+                                update_pet_status.executeUpdate();
+                                update_pet_status.close();
+                                System.out.println("Update successful!");
+                            } catch(SQLException se){
+                                se.printStackTrace();
+                            }
+                        } else if (choice == 13){
+                            return;
                         } else {
                             System.out.println("Invalid input. Try again. ");
                             choice = scan.nextInt();
                         }
                     } catch(InputMismatchException e){
+                        System.out.println("Please enter an integer value.");
                         scan.nextLine();
-                        System.out.println(e.getMessage());
-                        System.out.println("Please enter an integer value");
                     }
                 } 
             

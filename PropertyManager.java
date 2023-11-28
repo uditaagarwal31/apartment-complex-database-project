@@ -182,6 +182,7 @@ public class PropertyManager {
         while(true){
             System.out.println("Input tenant id");
             tenant_id = scan.nextInt();
+            scan.nextLine();
             try{
                 PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
                 check_tenant_exists.setInt(1, tenant_id);
@@ -489,14 +490,13 @@ public class PropertyManager {
         Scanner scan = new Scanner(System.in); 
         int property_id = 0;
         while(true){
-            System.out.println("Enter the property_id you want to add the amenity in");
+            System.out.println("Enter the property number you want to add the amenity in");
             System.out.println("1 - Eastside Commons \n 2 - Oasis Lofts \n 3 - Riverfront Lofts \n 4 - Sunset Terrace \n 5 - Joyful Apartments");
             try{
                 property_id = scan.nextInt();
                 scan.nextLine();
-                if(property_id < 1 && property_id > 5){
+                if(property_id < 1 || property_id > 5){
                     System.out.println("Please enter a valid integer number between 1 and 5");
-                    property_id = scan.nextInt();
                 } else {
                     break;
                 }
@@ -591,7 +591,7 @@ public class PropertyManager {
                         System.out.println("Select if its 1 - Public Amenity \n2 - Private Amenity");
                         try{
                             amenity_type = scan.nextInt();
-                                scan.next();
+                                scan.nextLine();
                                 // if its a public amenity, adds to public amenity table
                                 if (amenity_type == 1){
                                     System.out.println("Please enter the amenity accessibility in the form {hour} AM - {hour} PM. If accessible all day, enter 24 hours");
@@ -651,12 +651,10 @@ public class PropertyManager {
                                     return;
                                 } else {
                                     System.out.println("Please enter a valid integer number between 1 and 2");
-                                    amenity_type = scan.nextInt();
                                 }
                         } catch(InputMismatchException e){
-                            scan.nextLine();
-                            System.out.println(e.getMessage());
                             System.out.println("Please enter an integer value");
+                            scan.nextLine();
                         }
                     }   
                 } catch(SQLException se){

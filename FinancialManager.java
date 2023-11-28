@@ -220,9 +220,5 @@ public class FinancialManager {
         Arrays.sort(property_profits);
         System.out.println("The most profitable property is " + financial_analysis.get(property_profits[4]) + " with profits of $" + property_profits[4]);
         System.out.println("The least profitable property is " + financial_analysis.get(property_profits[0]) + " with profits of $" + property_profits[0]);
-
     }
-
-  
-    
 }
