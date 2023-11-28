@@ -139,6 +139,7 @@ public class Tenant {
                             se.printStackTrace();
                         }
                     }
+                    System.out.println();
                 }
             }
             payments.close();
@@ -277,22 +278,72 @@ public class Tenant {
                             scan.nextLine();
                         }
                     }
+
+                    while(true){ 
+                        System.out.println("Enter number of $50 bills");
+                        try{
+                            num_fifty_bills = scan.nextInt();
+                            scan.nextLine();
+                            break;
+                        } catch(InputMismatchException e){
+                            System.out.println(e.getMessage());
+                            System.out.println("Please enter an integer value");
+                            scan.nextLine();
+                        }
+                    }
                     
-                    System.out.println("Enter number of $50 bills");
-                    num_fifty_bills = scan.nextInt();
-                    scan.nextLine();
-                    System.out.println("Enter number of $20 bills");
-                    num_twenty_bills = scan.nextInt();
-                    scan.nextLine();
-                    System.out.println("Enter number of $10 bills");
-                    num_ten_bills = scan.nextInt();
-                    scan.nextLine();
-                    System.out.println("Enter number of $5 bills");
-                    num_five_bills = scan.nextInt();
-                    scan.nextLine();
-                    System.out.println("Enter number of $2 bills");
-                    num_two_bills = scan.nextInt();
-                    scan.nextLine();
+                    while(true){ 
+                        System.out.println("Enter number of $20 bills");
+                        try{
+                            num_twenty_bills = scan.nextInt();
+                            scan.nextLine();
+                            break;
+                        } catch(InputMismatchException e){
+                            System.out.println(e.getMessage());
+                            System.out.println("Please enter an integer value");
+                            scan.nextLine();
+                        }
+                    }
+                    
+                    while(true){ 
+                        System.out.println("Enter number of $10 bills");
+                        try{
+                            num_ten_bills = scan.nextInt();
+                            scan.nextLine();
+                            break;
+                        } catch(InputMismatchException e){
+                            System.out.println(e.getMessage());
+                            System.out.println("Please enter an integer value");
+                            scan.nextLine();
+                        }
+                    }
+                    
+                    while(true){ 
+                        System.out.println("Enter number of $5 bills");
+                        try{
+                            num_five_bills = scan.nextInt();
+                            scan.nextLine();
+                            break;
+                        } catch(InputMismatchException e){
+                            System.out.println(e.getMessage());
+                            System.out.println("Please enter an integer value");
+                            scan.nextLine();
+                        }
+                    }
+                    
+                    while(true){ 
+                        System.out.println("Enter number of $2 bills");
+                        try{
+                            num_two_bills = scan.nextInt();
+                            scan.nextLine();
+                            break;
+                        } catch(InputMismatchException e){
+                            System.out.println(e.getMessage());
+                            System.out.println("Please enter an integer value");
+                            scan.nextLine();
+                        }
+                    }
+                    
                     int amount = num_hundred_bills * 100 + num_fifty_bills * 50 + num_twenty_bills * 20 + num_ten_bills * 10 + num_five_bills * 5 + num_two_bills * 2;
                     System.out.println("Amount entered: $" + amount);
                     System.out.println("Total due:  $" + total_due);
@@ -755,7 +806,7 @@ public class Tenant {
 }
 
 
-// TO DO: validate cash inputs 
 // TO DO: check move out date set between lease expiry & sign date
 // TO DO: pet fees 
-// TO DO: add unique constraint to transaction_id/invoice_num 
+// TO DO: add unique constraint to transaction_id/invoice_num
+// TO DO: validate int input issues  
