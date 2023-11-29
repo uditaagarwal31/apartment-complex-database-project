@@ -13,166 +13,246 @@ public class PropertyManager {
     }
 
     public static boolean isValidDate(String date){
-        if(date.length() != 10){
-            return false;
-        }
-        // MM-DD-YYYY
-        int month = Integer.valueOf(date.substring(0, 2));
-        int actual_date = Integer.valueOf(date.substring(3, 5));
-        int year = Integer.valueOf(date.substring(6));
-        if(month < 1 || month > 12){
-            System.out.println("Invalid month. Please enter a value between 1 and 12.");
-            return false;
-        } else if (actual_date < 1 || actual_date > 31){
-            System.out.println("Invalid date. Please enter a value between 1 and 31.");
-            return false;
-        } else if (year < 1900 || year > 2025){
-            System.out.println("Invalid year. Please enter a value between 1900 and 2025.");
-            return false;
-        }
+        try{
+            if(date.length() != 10){
+                return false;
+            }
+            // MM-DD-YYYY
+            int month = Integer.valueOf(date.substring(0, 2));
+            int actual_date = Integer.valueOf(date.substring(3, 5));
+            int year = Integer.valueOf(date.substring(6));
+            if(month < 1 || month > 12){
+                System.out.println("Invalid month. Please enter a value between 1 and 12.");
+                return false;
+            } else if (actual_date < 1 || actual_date > 31){
+                System.out.println("Invalid date. Please enter a value between 1 and 31.");
+                return false;
+            } else if (year < 1900 || year > 2025){
+                System.out.println("Invalid year. Please enter a value between 1900 and 2025.");
+                return false;
+            }
 
-        // validates date entry for February
-        if(month == 2 && actual_date > 28){
-            System.out.println("Invalid date. Please enter a date between 1 - 28 for February.");
+            // validates date entry for February
+            if(month == 2 && actual_date > 28){
+                System.out.println("Invalid date. Please enter a date between 1 - 28 for February.");
+                return false;
+            }
+
+            // validates date entry for months with 30 days 
+            if((month == 4 || month == 6 || month == 9 || month == 11) && actual_date > 30){
+                System.out.println("Invalid date. Please enter a date between 1 - 30 for this month.");
+                return false;
+            }
+
+        } catch(Exception e){
             return false;
         }
+        return true;
+    }
 
-        // validates date entry for months with 30 days 
-        if((month == 4 || month == 6 || month == 9 || month == 11) && actual_date > 30){
-            System.out.println("Invalid date. Please enter a date between 1 - 30 for this month.");
+    public boolean check_window(String date_signed, String date_expires, String date_move_out){
+        try{
+            // MM-DD-YYYY
+            int month_move_out = Integer.valueOf(date_move_out.substring(0, 2));
+            int actual_date_move_out = Integer.valueOf(date_move_out.substring(3, 5));
+            int year_move_out = Integer.valueOf(date_move_out.substring(6));
+
+            int year_sign = Integer.valueOf(date_signed.substring(0, 4));
+            int month_sign = Integer.valueOf(date_signed.substring(5, 7));
+            int date_sign = Integer.valueOf(date_signed.substring(8, 10));
+
+            int year_expiry = Integer.valueOf(date_expires.substring(0, 4));
+            int month_expiry = Integer.valueOf(date_expires.substring(5, 7));
+            int date_expiry = Integer.valueOf(date_expires.substring(8, 10));
+
+            if(year_move_out > year_expiry){
+                return false;
+            }
+
+            if(year_sign > year_move_out){
+                return false;
+            }
+
+            if(year_expiry == year_move_out){
+                if(month_move_out > month_expiry){
+                    return false;
+                }
+                if(month_move_out == month_expiry && actual_date_move_out > date_expiry){
+                    return false;
+                }
+                // otherwise you move out sooner than lease expires which is fine 
+            }
+
+            if(year_expiry > year_move_out){ // move out sooner than lease expires
+                if(month_sign > month_move_out){
+                    return false;
+                } 
+
+                if(month_sign == month_move_out && actual_date_move_out < date_sign){
+                    return false;
+                }
+            }
+        } catch(Exception e){
             return false;
         }
         return true;
     }
 
     public void recordVistorData(Connection conn){
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("Input prospective tenant's first name");
-        String first_name = scan.nextLine();
-
-        System.out.println("Input prospective middle name");
-        String middle_name = scan.nextLine();
-
-        System.out.println("Input prospective tenant's last name");
-        String last_name = scan.nextLine();
-
-        System.out.println("Input prospective tenant's address");
-        String address = scan.nextLine();
-
-        System.out.println("Input prospective tenant's city");
-        String city = scan.nextLine();
-
-        System.out.println("Input prospective tenant's state");
-        String state = scan.nextLine();
-
-        System.out.println("Input prospective tenant's country");
-        String country = scan.nextLine();
-
-        System.out.println("Input prospective tenant's zipcode");
-        String zipcode = scan.nextLine();
-        while(zipcode.length() != 5){
-            System.out.println("Invalid zipcode. Please enter a valid 5 digit zipcode");
-            zipcode = scan.nextLine();
-        }
-
-        System.out.println("Input prospective tenant's phone number (without any special characters)");
-        String phone_number = scan.nextLine();
-        phone_number = phone_number.replaceAll("[^0-9]","");
-        while(phone_number.length() != 10){
-            System.out.println("Invalid phone number. Please enter a valid 10 digit number");
-            phone_number = scan.nextLine();
-            phone_number = phone_number.replaceAll("[^0-9]","");
-        }
-
-        System.out.println("Input prospective tenant's email");
-        String email = scan.nextLine();
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$"; // reference: https://www.geeksforgeeks.org/check-email-address-valid-not-java/
-        Pattern pat = Pattern.compile(emailRegex); 
-        while(!pat.matcher(email).matches()){
-            System.out.println("Invalid email id. Please enter a valid email.");
-            email = scan.nextLine();
-        }
-
-        System.out.println("Input prospective tenant's age");
-        int age = scan.nextInt();
-        scan.nextLine(); // to consume \n char 
-        if(age < 18){
-            System.out.println("You must be above the age of 18 to be eligible to live here. Please try again after a couple of years.");
-            return;
-        }
-
-        System.out.println("Input prospective tenant's gender");
-        String gender = scan.nextLine();
-
-        System.out.println("Input prospective tenant's credit score");
-        int credit_score = scan.nextInt();
-        scan.nextLine(); // to consume \n char 
-        while(credit_score < 300 || credit_score > 850){
-            System.out.println("Invalid score. Please enter a value between 300 - 850");
-            credit_score = scan.nextInt();
-        }
-        if(credit_score < 720){
-            System.out.println("Your score has to be above 720 to be eligible to live here. Please try again after you've met our requirement.");
-            return;
-        }
-
-        System.out.println("Input yes or no if the prospective tenant has a pet or not");
-        String has_pet = scan.nextLine();
-        while (true) {
-            if(has_pet.equalsIgnoreCase("yes") || has_pet.equalsIgnoreCase("no")){
-                break;
-            } 
-            System.out.println("Invalid input. Please enter yes or no");
-            has_pet = scan.nextLine();
-        }
-
-        String visit_date = "";
-        while(true){
-            System.out.println("Input visit date in the form MM-DD-YYYY");
-            visit_date = scan.nextLine();
-            boolean verdict = isValidDate(visit_date);
-            if (verdict) {
-                break;
-            } else{
-                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
-            }
-        }
-        
-        int tenant_id = 0;
-        String generatedColumns[] = { "tenant_id" };
         try{
-            // TO DO: ERROR HANDLING 
-            PreparedStatement insert_prospective_tenant = conn.prepareStatement("Insert into ProspectiveTenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, to_date(?,'mm-dd-yyyy'))", generatedColumns);
-            insert_prospective_tenant.setString(1, first_name);
-            insert_prospective_tenant.setString(2, middle_name);
-            insert_prospective_tenant.setString(3, last_name);
-            insert_prospective_tenant.setString(4, address);
-            insert_prospective_tenant.setString(5, city);
-            insert_prospective_tenant.setString(6, state);
-            insert_prospective_tenant.setString(7, country);
-            insert_prospective_tenant.setString(8, zipcode);
-            insert_prospective_tenant.setString(9, phone_number);
-            insert_prospective_tenant.setString(10, email);
-            insert_prospective_tenant.setInt(11, age);
-            insert_prospective_tenant.setString(12, gender);
-            insert_prospective_tenant.setInt(13, credit_score);
-            insert_prospective_tenant.setString(14, has_pet);
-            insert_prospective_tenant.setString(15, visit_date);
-            insert_prospective_tenant.executeUpdate();                   
-            
-            try{
-                ResultSet generatedKeys = insert_prospective_tenant.getGeneratedKeys();
-                if(generatedKeys.next()){
-                    tenant_id = generatedKeys.getInt(1);
+            Scanner scan = new Scanner(System.in);
+
+            System.out.println("Input prospective tenant's first name");
+            String first_name = scan.nextLine();
+
+            System.out.println("Input prospective middle name");
+            String middle_name = scan.nextLine();
+
+            System.out.println("Input prospective tenant's last name");
+            String last_name = scan.nextLine();
+
+            System.out.println("Input prospective tenant's address");
+            String address = scan.nextLine();
+
+            System.out.println("Input prospective tenant's city");
+            String city = scan.nextLine();
+
+            System.out.println("Input prospective tenant's state");
+            String state = scan.nextLine();
+
+            System.out.println("Input prospective tenant's country");
+            String country = scan.nextLine();
+
+            System.out.println("Input prospective tenant's zipcode");
+            String zipcode = scan.nextLine();
+            while(zipcode.length() != 5 || !zipcode.matches("[0-9]+")){ 
+                System.out.println("Invalid zipcode. Please enter a valid 5 digit zipcode");
+                zipcode = scan.nextLine();
+            }
+
+            // TO DO: CHECK FOR LETTERS 
+            System.out.println("Input prospective tenant's phone number (without any special characters)");
+            String phone_number = scan.nextLine();
+            while(phone_number.length() != 10 || !phone_number.matches("[0-9]+")){
+                System.out.println("Invalid phone number. Please enter a valid 10 digit number");
+                phone_number = scan.nextLine();
+            }
+
+            System.out.println("Input prospective tenant's email");
+            String email = scan.nextLine();
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$"; // reference: https://www.geeksforgeeks.org/check-email-address-valid-not-java/
+            Pattern pat = Pattern.compile(emailRegex); 
+            while(!pat.matcher(email).matches()){
+                System.out.println("Invalid email id. Please enter a valid email.");
+                email = scan.nextLine();
+            }
+
+            int age = 0;
+            while (true) {
+                try{
+                    System.out.println("Input prospective tenant's age");
+                    age = scan.nextInt();
+                    scan.nextLine(); // to consume \n char 
+                    if(age < 18){
+                        System.out.println("You must be above the age of 18 to be eligible to live here. Please try again after a couple of years.");
+                        return;
+                    } else{
+                        break;
+                    }
+
+                } catch(Exception e){
+                    System.out.println("Please enter a valid value.");
+                    scan.nextLine();
                 }
-                System.out.println("The tenant id is " + tenant_id);
+            }
+            
+
+            System.out.println("Input prospective tenant's gender");
+            String gender = scan.nextLine();
+
+            int credit_score = 0;
+            while (true) {
+                try{
+                    System.out.println("Input prospective tenant's credit score");
+                    credit_score = scan.nextInt();
+                    scan.nextLine(); // to consume \n char 
+                    while(credit_score < 300 || credit_score > 850){
+                        System.out.println("Invalid score. Please enter a value between 300 - 850");
+                        credit_score = scan.nextInt();
+                        scan.nextLine(); // to consume \n char 
+                    }
+                    if(credit_score < 720){
+                        System.out.println("Your score has to be above 720 to be eligible to live here. Please try again after you've met our requirement.");
+                        return;
+                    } else{
+                        break;
+                    } 
+                } catch(Exception e){
+                    System.out.println("Please enter a valid value.");
+                    scan.nextLine();
+                }
+            }
+
+            System.out.println("Input yes or no if the prospective tenant has a pet or not");
+            String has_pet = scan.nextLine();
+            while (true) {
+                if(has_pet.equalsIgnoreCase("yes") || has_pet.equalsIgnoreCase("no")){
+                    break;
+                } 
+                System.out.println("Invalid input. Please enter yes or no");
+                has_pet = scan.nextLine();
+            }
+
+            String visit_date = "";
+            while(true){
+                System.out.println("Input visit date in the form MM-DD-YYYY");
+                visit_date = scan.nextLine();
+                boolean verdict = isValidDate(visit_date);
+                if (verdict) {
+                    break;
+                } else{
+                    System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
+                }
+            }
+            
+            int tenant_id = 0;
+            String generatedColumns[] = { "tenant_id" };
+            try{
+                // TO DO: ERROR HANDLING 
+                PreparedStatement insert_prospective_tenant = conn.prepareStatement("Insert into ProspectiveTenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, to_date(?,'mm-dd-yyyy'))", generatedColumns);
+                insert_prospective_tenant.setString(1, first_name);
+                insert_prospective_tenant.setString(2, middle_name);
+                insert_prospective_tenant.setString(3, last_name);
+                insert_prospective_tenant.setString(4, address);
+                insert_prospective_tenant.setString(5, city);
+                insert_prospective_tenant.setString(6, state);
+                insert_prospective_tenant.setString(7, country);
+                insert_prospective_tenant.setString(8, zipcode);
+                insert_prospective_tenant.setString(9, phone_number);
+                insert_prospective_tenant.setString(10, email);
+                insert_prospective_tenant.setInt(11, age);
+                insert_prospective_tenant.setString(12, gender);
+                insert_prospective_tenant.setInt(13, credit_score);
+                insert_prospective_tenant.setString(14, has_pet);
+                insert_prospective_tenant.setString(15, visit_date);
+                insert_prospective_tenant.executeUpdate();                   
+                
+                try{
+                    ResultSet generatedKeys = insert_prospective_tenant.getGeneratedKeys();
+                    if(generatedKeys.next()){
+                        tenant_id = generatedKeys.getInt(1);
+                    }
+                    System.out.println("The tenant id is " + tenant_id);
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+                insert_prospective_tenant.close();
             } catch(SQLException se){
                 se.printStackTrace();
             }
-            insert_prospective_tenant.close();
-        } catch(SQLException se){
-            se.printStackTrace();
+        } catch(Exception e){
+            System.out.println("Please try again.");
+            return;
         }
     }
 
@@ -433,6 +513,8 @@ public class PropertyManager {
                 if(!result.next()){
                     System.out.println("Invalid tenant id. This tenant does not exist. Please enter a valid id.");
                 } else{
+                    result.close();
+                    check_tenant_exists.close();
                     break;
                 }
                 result.close();
@@ -463,33 +545,91 @@ public class PropertyManager {
 
     public void set_move_out_date(Connection conn){
         Scanner scan = new Scanner(System.in);
-        System.out.println("Enter the apartment number associated with move out");
-        String apartment_num = scan.nextLine();
         int lease_id = 0;
-        try{
-            PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT lease_id from Apartment WHERE apartment_num=?");
-            preparedStatement1.setString(1, apartment_num);
-            ResultSet result1 = preparedStatement1.executeQuery();
-            
-            while(result1.next()){
-                lease_id = result1.getInt("lease_id");
+        while(true){
+            System.out.println("Enter the apartment number associated with move out");
+            String apartment_num = scan.nextLine();
+            try{
+                PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT lease_id from Apartment WHERE apartment_num=?");
+                preparedStatement1.setString(1, apartment_num);
+                ResultSet result1 = preparedStatement1.executeQuery();
+                
+                while(result1.next()){
+                    lease_id = result1.getInt("lease_id");
+                }
+                if(lease_id == 0){
+                    System.out.println("Invalid apartment number. Please enter a valid apartment.");
+                } else {
+                    System.out.println("Lease id associated is " + lease_id);
+                    result1.close();
+                    preparedStatement1.close();
+                    break;
+                }
+                result1.close();
+                preparedStatement1.close();
+            } catch(SQLException se){
+                se.printStackTrace();
             }
-            System.out.println("Lease id is " + lease_id);
-            result1.close();
-            preparedStatement1.close();
+        }
+
+        String date_signed = "";
+        String date_expires = "";
+        String check_if_theres_date_move_out = "";
+        try{
+            PreparedStatement get_sign_expiry_dates = conn.prepareStatement("Select date_signed, date_expires, date_move_out from Lease WHERE lease_id=?");
+            get_sign_expiry_dates.setInt(1, lease_id);
+            ResultSet result = get_sign_expiry_dates.executeQuery();
+            while (result.next()) {
+                date_signed = result.getString("date_signed");
+                date_expires = result.getString("date_expires");
+                check_if_theres_date_move_out = result.getString("date_move_out");
+            }
+            result.close();
+            get_sign_expiry_dates.close();
         } catch(SQLException se){
             se.printStackTrace();
         }
 
+        System.out.println("Lease was signed on "+ date_signed);
+        System.out.println("Lease expires on " + date_expires);
+
+        if(!(check_if_theres_date_move_out == null)){
+            System.out.println("You already have a move out date set to " + check_if_theres_date_move_out + " but you can still update it!");
+            while(true){
+                try{
+                    System.out.println("Enter 1 to update it or 2 to return to the main menu");
+                    int choice = scan.nextInt();
+                    scan.nextLine();
+                    if(choice == 1){
+                        break;
+                    } else if(choice == 2){
+                        return;
+                    } else {
+                        System.out.println("Please enter either 1 or 2.");
+                    }
+                } catch(Exception e){
+                    System.out.println("Please enter a valid input.");
+                    scan.nextLine();
+                }
+            }
+        }
+
         String date_move_out = "";
         while(true){
-            System.out.println("Input move-out date in the form MM-DD-YYYY"); 
-            date_move_out = scan.nextLine();
-            boolean verdict = isValidDate(date_move_out);
-            if (verdict) {
-                break;
-            } else{
-                System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
+            try{
+                System.out.println("Input move-out date within this window in the form MM-DD-YYYY:"); 
+                date_move_out = scan.nextLine();
+                boolean verdict = isValidDate(date_move_out);
+                boolean within_window = check_window(date_signed, date_expires, date_move_out);
+                if (verdict && within_window) {
+                    break;
+                } else if (!verdict){
+                    System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY.");
+                } else if (!within_window){
+                    System.out.println("Please enter a date within the lease signed and lease expiry window.");
+                }
+            } catch(Exception e){
+                System.out.println("Invalid. Please try again");
             }
         }
 
@@ -498,6 +638,7 @@ public class PropertyManager {
             preparedStatement2.setString(1, date_move_out);
             preparedStatement2.setInt(2, lease_id);
             preparedStatement2.executeUpdate();
+            System.out.println("Move out successful!");
         } catch(SQLException se){
             se.printStackTrace();
         }

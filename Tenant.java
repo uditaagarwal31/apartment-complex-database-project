@@ -108,6 +108,7 @@ public class Tenant {
         String date_due_check = "";
         int month = Integer.valueOf(payment_date.substring(0, 2));
         int actual_date = Integer.valueOf(payment_date.substring(3, 5));
+        int year = Integer.valueOf(payment_date.substring(6));
         HashSet<Integer> invoices_for_tenant = new HashSet<>();
 
         try{
@@ -120,7 +121,7 @@ public class Tenant {
                 date_paid = payments.getString("date_paid");
                 total_due = payments.getDouble("total_due");
                 invoice_num = payments.getInt("invoice_num");
-                if(Integer.valueOf(date_due.substring(5, 7)) == month && date_paid == null){
+                if(Integer.valueOf(date_due.substring(5, 7)) == month && date_paid == null && year == Integer.valueOf(date_due.substring(0, 4))){
                     System.out.println("Invoice: " + invoice_num + " $" + total_due + " due by " + date_due + ".");
                     invoices_for_tenant.add(invoice_num);
                     date_due_check = date_due;
@@ -795,7 +796,7 @@ public class Tenant {
     
 }
 
-
-// TO DO: check move out date set between lease expiry & sign date
-// TO DO: pet fees 
+// TO DO: PUT EVERYTHING IN TRY CATCH, ADD GENERAL EXCEPTION TRY CATCH, DOUBLE CHECK ALL ERROR CHECKING
+// TO DO: PRINT SUCCESSFUL / FAIL, PRINT STUFF IN DATABASE WHEREVER NEEDED
 // TO DO: add unique constraint to transaction_id/invoice_num
+// TO DO: UPDATE ERD 
