@@ -2,7 +2,7 @@
 import java.sql.*;
 import java.util.*;
 
-public class PopulateData {
+public class EastsideUncommons {
     static final String DB_URL = "jdbc:oracle:thin:@edgar1.cse.lehigh.edu:1521:cse241";
 
     public static void main(String[] args){

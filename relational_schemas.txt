@@ -1,5 +1,5 @@
-javac PopulateData.java 
-java -cp .:ojdbc11.jar PopulateData
+javac EastsideUncommons.java 
+java -cp .:ojdbc11.jar EastsideUncommons
 
 PROPERTY 
 drop table Property;
