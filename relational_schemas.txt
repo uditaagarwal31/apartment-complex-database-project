@@ -26,7 +26,7 @@ drop table Amenity;
 select * from Amenity;
 create table Amenity(
     amenity_id number(4) generated always as identity,
-    amenity_name varchar(20),
+    amenity_name varchar(20) NOT NULL,
     primary key(amenity_id)
 );
 insert into Amenity (amenity_name) values ('Swimming Pool');
@@ -44,7 +44,7 @@ insert into Amenity (amenity_name) values ('Babysitting');
 PUBLIC AMENITY
 create table PublicAmenity(
     amenity_id number(4),
-    accessibility char(20),
+    accessibility char(20) NOT NULL,
     foreign key(amenity_id) references Amenity
 );
 insert into PublicAmenity (amenity_id, accessibility) values (1, '24/7');
@@ -58,7 +58,7 @@ insert into PublicAmenity (amenity_id, accessibility) values (7, '24/7');
 PRIVATE AMENITY 
 create table PrivateAmenity(
     amenity_id number(4),
-    monthly_cost numeric(7,2),
+    monthly_cost numeric(7,2) NOT NULL,
     foreign key(amenity_id) references Amenity
 );
 drop table PrivateAmenity;
@@ -70,9 +70,9 @@ insert into PrivateAmenity (amenity_id, monthly_cost) values (10, '600');
 APARTMENT
 create table Apartment(
     apartment_num char(3),
-    apt_size int,
-    bedroom int,
-    bathroom numeric (2,1),
+    apt_size int NOT NULL,
+    bedroom int NOT NULL,
+    bathroom numeric (2,1) NOT NULL,
     property_id number(4),
     lease_id number(4),
     primary key(apartment_num),
@@ -92,21 +92,21 @@ insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, 
 PROSPECTIVETENANT
 create table PROSPECTIVETENANT(
     tenant_id number(4) generated always as identity,
-    first_name char(20),
+    first_name char(20) NOT NULL,
     middle_name char(20),
-    last_name char(20),
-    address varchar(30),
-    city char(20),
-    state char(20),
-    country char(20),
-    zipcode char(5),
-    phone_num varchar(11),
-    email char(30),
-    age int,
-    gender char(20),
-    credit_score int,
-    has_pet char(3),
-    visit_date DATE,
+    last_name char(20) NOT NULL,
+    address varchar(30) NOT NULL,
+    city char(20) NOT NULL,
+    state char(20) NOT NULL,
+    country char(20) NOT NULL,
+    zipcode char(5) NOT NULL,
+    phone_num varchar(11) NOT NULL,
+    email char(30) NOT NULL,
+    age int NOT NULL,
+    gender char(20) NOT NULL,
+    credit_score int NOT NULL,
+    has_pet char(3) NOT NULL,
+    visit_date DATE NOT NULL,
     primary key(tenant_id)
 );
 
@@ -129,8 +129,8 @@ select * from PROSPECTIVETENANT;
 DEPENDANT
 create table Dependant(
     tenant_id number(4),
-    first_name char(20),
-    last_name char(20),
+    first_name char(20) NOT NULL,
+    last_name char(20) NOT NULL,
     foreign key(tenant_id) references Tenant
 );
 select * from Dependant;
@@ -144,11 +144,11 @@ insert into Dependant (tenant_id, first_name, last_name) values (7, 'Carter', 'W
 LEASE
 create table Lease(
     lease_id number(4) generated always as identity,
-    monthly_rent numeric(6,2),
-    lease_term int,
-    security_deposit numeric(6,2),
-    date_signed DATE,
-    date_expires DATE,
+    monthly_rent numeric(6,2) NOT NULL,
+    lease_term int NOT NULL,
+    security_deposit numeric(6,2) NOT NULL,
+    date_signed DATE NOT NULL,
+    date_expires DATE NOT NULL,
     date_move_out DATE,
     primary key(lease_id)
 );
@@ -169,9 +169,9 @@ drop table Payment;
 create table Payment(
     invoice_num number(4) generated always as identity,
     lease_id number(4),
-    date_due DATE,
+    date_due DATE NOT NULL,
     date_paid DATE,
-    total_due numeric (8,2),
+    total_due numeric (8,2) NOT NULL,
     primary key(invoice_num),
     foreign key(lease_id) references Lease
 );
@@ -219,9 +219,9 @@ insert into Cash (transaction_id ,num_hundred_bills, num_fifty_bills, num_twenty
 CARD
 create table Card(
     transaction_id number(4),
-    card_num char(16),
-    card_name char(30),
-    expiry char(4),
+    card_num char(16) NOT NULL,
+    card_name char(30) NOT NULL,
+    expiry char(4) NOT NULL,
     foreign key(transaction_id) references PaymentMethod
 );
 

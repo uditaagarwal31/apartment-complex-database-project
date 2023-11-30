@@ -104,24 +104,48 @@ public class PropertyManager {
 
             System.out.println("Input prospective tenant's first name");
             String first_name = scan.nextLine();
+            while(first_name.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                first_name = scan.nextLine();
+            }
 
             System.out.println("Input prospective middle name");
             String middle_name = scan.nextLine();
 
             System.out.println("Input prospective tenant's last name");
             String last_name = scan.nextLine();
+            while(last_name.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                last_name = scan.nextLine();
+            }
 
             System.out.println("Input prospective tenant's address");
             String address = scan.nextLine();
+            while(address.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                address = scan.nextLine();
+            }
 
             System.out.println("Input prospective tenant's city");
             String city = scan.nextLine();
+            while(city.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                city = scan.nextLine();
+            }
 
             System.out.println("Input prospective tenant's state");
             String state = scan.nextLine();
+            while(state.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                state = scan.nextLine();
+            }
 
             System.out.println("Input prospective tenant's country");
             String country = scan.nextLine();
+            while(country.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                country = scan.nextLine();
+            }
 
             System.out.println("Input prospective tenant's zipcode");
             String zipcode = scan.nextLine();
@@ -130,7 +154,6 @@ public class PropertyManager {
                 zipcode = scan.nextLine();
             }
 
-            // TO DO: CHECK FOR LETTERS 
             System.out.println("Input prospective tenant's phone number (without any special characters)");
             String phone_number = scan.nextLine();
             while(phone_number.length() != 10 || !phone_number.matches("[0-9]+")){
@@ -146,6 +169,10 @@ public class PropertyManager {
                 System.out.println("Invalid email id. Please enter a valid email.");
                 email = scan.nextLine();
             }
+            while(email.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                email = scan.nextLine();
+            }
 
             int age = 0;
             while (true) {
@@ -153,13 +180,17 @@ public class PropertyManager {
                     System.out.println("Input prospective tenant's age");
                     age = scan.nextInt();
                     scan.nextLine(); // to consume \n char 
+                    while (age == 0) {
+                        System.out.println("This field can't be empty. Please enter a valid value.");
+                        age = scan.nextInt();
+                        scan.nextLine(); // to consume \n char 
+                    }
                     if(age < 18){
                         System.out.println("You must be above the age of 18 to be eligible to live here. Please try again after a couple of years.");
                         return;
                     } else{
                         break;
                     }
-
                 } catch(Exception e){
                     System.out.println("Please enter a valid value.");
                     scan.nextLine();
@@ -169,6 +200,10 @@ public class PropertyManager {
 
             System.out.println("Input prospective tenant's gender");
             String gender = scan.nextLine();
+            while(gender.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                gender = scan.nextLine();
+            }
 
             int credit_score = 0;
             while (true) {
@@ -254,6 +289,7 @@ public class PropertyManager {
             System.out.println("Server error. Please try again.");
             return;
         }
+        System.out.println();
     }
 
     public void recordLeaseData(Connection conn){
@@ -272,22 +308,26 @@ public class PropertyManager {
                     scan.nextLine();
                 }
             }
-            while(true){
+            while(true){ // here 
                 try{
                     PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
                     check_tenant_exists.setInt(1, tenant_id);
                     ResultSet result = check_tenant_exists.executeQuery();
-                    
-                    if(!result.next()){
-                        System.out.println("Invalid tenant id. This tenant does not exist. Please enter a valid id.");
+                    try{
+                        if(!result.next()){
+                            System.out.println("Invalid tenant id. This tenant does not exist. Please enter a valid id.");
+                            tenant_id = scan.nextInt();
+                            scan.nextLine();
+                        } else{
+                            has_pet = result.getString("has_pet");
+                            result.close();
+                            check_tenant_exists.close();
+                            break;
+                        }
+                    } catch(Exception e){
+                        System.out.println("Please enter an integer value.");
                         tenant_id = scan.nextInt();
                         scan.nextLine();
-                    } else{
-                        has_pet = result.getString("has_pet");
-                        System.out.println("this tenants pet status " + has_pet);
-                        result.close();
-                        check_tenant_exists.close();
-                        break;
                     }
                     result.close();
                     check_tenant_exists.close();
@@ -302,7 +342,12 @@ public class PropertyManager {
                     System.out.println("Choose which apartment style you'd like. All leases are for 12 months. \n 1 - 1 bedroom & 1 bathroom apartment with 1200 sq feet, base rent $1200 per month and security deposit $2400 \n 2 - 2 bedroom & 1 bathroom apartment with 1400 sq feet, base rent $1800 per month and security deposit $3600 \n 3 - 3 bedroom & 2 bathroom apartment with 1600 sq feet, base rent $2400 per month and security deposit $4800 \n 4 - 4 bedroom & 2 bathroom apartment with 1800 sq feet, base rent $2800 per month and security deposit $5600");
                     apartment_style_choice = scan.nextInt();
                     scan.nextLine();
-                    break;
+                    if(apartment_style_choice > 0 && apartment_style_choice < 5){
+                        break;
+                    } else{
+                        System.out.println("Please enter a value between 1 and 4.");
+                    }
+                    
                 } catch(Exception e){
                     System.out.println("Please enter an integer value.");
                     scan.nextLine();
@@ -535,6 +580,7 @@ public class PropertyManager {
             System.out.println("Server error. Please try again.");
             return;
         }
+        System.out.println();
     }
 
     public void addDependant(Connection conn){
@@ -557,15 +603,18 @@ public class PropertyManager {
                     PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
                     check_tenant_exists.setInt(1, tenant_id);
                     ResultSet result = check_tenant_exists.executeQuery();
-                        
-                    if(!result.next()){
-                        System.out.println("Invalid tenant id. This tenant does not exist. Please enter a valid id.");
-                        tenant_id = scan.nextInt();
-                        scan.nextLine();
-                    } else{
-                        result.close();
-                        check_tenant_exists.close();
-                        break;
+                    try{
+                        if(!result.next()){
+                            System.out.println("Invalid tenant id. This tenant does not exist. Please enter a valid id.");
+                            tenant_id = scan.nextInt();
+                            scan.nextLine();
+                        } else{
+                            result.close();
+                            check_tenant_exists.close();
+                            break;
+                        }
+                    } catch(Exception e){
+                        System.out.println("Please enter an integer value.");
                     }
                     result.close();
                     check_tenant_exists.close();
@@ -576,9 +625,17 @@ public class PropertyManager {
         
             System.out.println("Input dependant's first name");
             String dependant_first_name = scan.nextLine();
+            while (dependant_first_name.length() == 0) {
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                dependant_first_name = scan.nextLine();
+            }
 
             System.out.println("Input dependant's last name");
             String dependant_last_name = scan.nextLine();
+             while (dependant_last_name.length() == 0) {
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                dependant_last_name = scan.nextLine();
+            }
 
             try{
                 PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into Dependant (tenant_id, first_name, last_name) values (?, ?, ?)");
@@ -595,6 +652,7 @@ public class PropertyManager {
             System.out.println("Server error. Please try again.");
             return;
         }
+        System.out.println();
     }
 
     public void set_move_out_date(Connection conn){
@@ -701,6 +759,7 @@ public class PropertyManager {
             System.out.println("Server error. Please try again.");
             return;
         }
+        System.out.println();
     }
 
     // ASSUMPTION: all properties have standard 10 amenities 
@@ -747,6 +806,10 @@ public class PropertyManager {
             // checks if this particular property has that amenity you want to add
             System.out.println("Enter the amenity you'd like to add in this property or enter 1 to return to the menu");
             String new_amenity = scan.nextLine();
+            while(new_amenity.length() == 0){ 
+                System.out.println("This field can't be empty. Please enter a valid value.");
+                new_amenity = scan.nextLine();
+            }
             if(new_amenity.equals("1")){
                 return;
             }
@@ -815,6 +878,10 @@ public class PropertyManager {
                                     if (amenity_type == 1){
                                         System.out.println("Please enter the amenity accessibility in the form {hour} AM - {hour} PM. If accessible all day, enter 24 hours");
                                         amenity_accessibility = scan.nextLine();
+                                        while(amenity_accessibility.length() == 0){ 
+                                            System.out.println("This field can't be empty. Please enter a valid value.");
+                                            amenity_accessibility = scan.nextLine();
+                                        }
                                         try{
                                             PreparedStatement insert_public_amenity = conn.prepareStatement("Insert into PublicAmenity (amenity_id, accessibility) values (?, ?)");
                                             insert_public_amenity.setInt(1, new_amenity_id);
@@ -841,9 +908,12 @@ public class PropertyManager {
                                         while(true){
                                             try{
                                                 monthly_cost = scan.nextDouble();
+                                                while(monthly_cost == 0){
+                                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                                    monthly_cost = scan.nextDouble();
+                                                }
                                                 break;
                                             } catch(InputMismatchException e){
-                                                System.out.println(e.getMessage());
                                                 System.out.println("Please enter numeric value");
                                                 scan.next();
                                             }
@@ -889,5 +959,6 @@ public class PropertyManager {
             System.out.println("Server error. Please try again.");
             return;
         }
+        System.out.println();
     }
 }

@@ -53,7 +53,11 @@ public class Tenant {
     }
 
     public static boolean card_expiry_validated(String date){
+        
         try{
+            if(date.length() != 4){
+                return false;
+            }
             // MMYY
             int month = Integer.valueOf(date.substring(0, 2));
             int year = Integer.valueOf(date.substring(2,4));
@@ -182,6 +186,7 @@ public class Tenant {
                             scan.nextLine();
                             if(user_wants_to_pay_now == 2){
                                 makeRentalPayment(conn, payment_date, invoices_for_tenant);
+                                break;
                             }
                         }
                     } catch(Exception e){
@@ -227,7 +232,11 @@ public class Tenant {
                     System.out.println("Choose your payment method. Choose 1 - Card \n 2 - Cash");
                     payment_method_choice = scan.nextInt();
                     scan.nextLine();
-                    break;
+                    if(payment_method_choice == 1 || payment_method_choice == 2){
+                        break;
+                    } else {
+                        System.out.println("Please enter 1 or 2.");
+                    }
                 } catch(Exception e){
                     System.out.println("Please enter an integer value.");
                     scan.nextLine();
@@ -250,6 +259,10 @@ public class Tenant {
                     }
                     System.out.println("Enter the name on your card");
                     String card_name = scan.nextLine();
+                    while (card_name.length() == 0) {
+                        System.out.println("This field can't be empty. Please enter a valid value.s");
+                        card_name = scan.nextLine();
+                    }
                     String card_expiry = "";
                     
                     while(true){
@@ -555,6 +568,10 @@ public class Tenant {
                             if (choice == 1){
                                 System.out.println("Enter your updated first name");
                                 first_name = scan.nextLine();
+                                while(first_name.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    first_name = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_first_name = conn.prepareStatement("Update ProspectiveTenant set first_name = ? WHERE tenant_id=?");
                                     update_first_name.setString(1, first_name);
@@ -581,6 +598,10 @@ public class Tenant {
                             } else if (choice == 3){
                                 System.out.println("Enter your updated last name");
                                 last_name = scan.nextLine();
+                                while(last_name.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    last_name = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_last_name = conn.prepareStatement("Update ProspectiveTenant set last_name = ? WHERE tenant_id=?");
                                     update_last_name.setString(1, last_name);
@@ -594,6 +615,10 @@ public class Tenant {
                             } else if (choice == 4){
                                 System.out.println("Enter your updated address");
                                 address = scan.nextLine();
+                                while(address.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    address = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_address = conn.prepareStatement("Update ProspectiveTenant set address = ? WHERE tenant_id=?");
                                     update_address.setString(1, address);
@@ -607,6 +632,10 @@ public class Tenant {
                             } else if (choice == 5){
                                 System.out.println("Enter your updated city");
                                 city = scan.nextLine();
+                                while(city.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    city = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_city = conn.prepareStatement("Update ProspectiveTenant set city = ? WHERE tenant_id=?");
                                     update_city.setString(1, city);
@@ -620,6 +649,10 @@ public class Tenant {
                             } else if (choice == 6){
                                 System.out.println("Enter your updated state");
                                 state = scan.nextLine();
+                                while(state.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    state = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_state = conn.prepareStatement("Update ProspectiveTenant set state = ? WHERE tenant_id=?");
                                     update_state.setString(1, state);
@@ -633,6 +666,10 @@ public class Tenant {
                             } else if (choice == 7){
                                 System.out.println("Enter your updated country");
                                 country = scan.nextLine();
+                                while(country.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    country = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_country = conn.prepareStatement("Update ProspectiveTenant set country = ? WHERE tenant_id=?");
                                     update_country.setString(1, country);
@@ -688,6 +725,10 @@ public class Tenant {
                                     System.out.println("Invalid email id. Please enter a valid email.");
                                     email_id = scan.nextLine();
                                 }
+                                while(email_id.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    email_id = scan.nextLine();
+                                }                    
                                 try{
                                     PreparedStatement update_email = conn.prepareStatement("Update ProspectiveTenant set email = ? WHERE tenant_id=?");
                                     update_email.setString(1, email_id);
@@ -701,6 +742,10 @@ public class Tenant {
                             } else if (choice == 11){
                                 System.out.println("Enter your updated gender");
                                 gender = scan.nextLine();
+                                while(gender.length() == 0){ 
+                                    System.out.println("This field can't be empty. Please enter a valid value.");
+                                    gender = scan.nextLine();
+                                }
                                 try{
                                     PreparedStatement update_gender = conn.prepareStatement("Update ProspectiveTenant set gender = ? WHERE tenant_id=?");
                                     update_gender.setString(1, gender);
@@ -766,7 +811,7 @@ public class Tenant {
             }
             
             // checks if lease exists and gets associated property id
-            while(true){
+            while(true){ // here 
                 try{
                     PreparedStatement check_lease_exists = conn.prepareStatement("SELECT * from Lease natural join apartment WHERE lease_id=?");
                     check_lease_exists.setInt(1, lease_id);
@@ -875,9 +920,7 @@ public class Tenant {
     }
 }
 
-// TO DO: PUT EVERYTHING IN TRY CATCH, ADD GENERAL EXCEPTION TRY CATCH, DOUBLE CHECK ALL ERROR CHECKING
-// TO DO: PRINT SUCCESSFUL / FAIL, PRINT STUFF IN DATABASE WHEREVER NEEDED
-// TO DO: add unique constraint to transaction_id/invoice_num
 // TO DO: UPDATE ERD 
 // TO DO: RUN ON SUNLAB
 // TO DO: SUNLAB SUBMISSION FIGURE 
+// TO DO: update relational insert statements 
