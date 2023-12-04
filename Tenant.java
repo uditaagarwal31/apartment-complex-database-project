@@ -14,12 +14,13 @@ public class Tenant {
 
     }
 
+    // validates the date entered by user in the form MM-DD-YYYY
     public static boolean isValidDate(String date){
         try{
             if(date.length() != 10){
                 return false;
             }
-            // MM-DD-YYYY
+            
             int month = Integer.valueOf(date.substring(0, 2));
             int actual_date = Integer.valueOf(date.substring(3, 5));
             int year = Integer.valueOf(date.substring(6));
@@ -52,13 +53,50 @@ public class Tenant {
         return true;
     }
 
+    // prints current tenant ids in the system 
+    public static void print_tenant_ids(Connection conn){
+        System.out.println("Current tenant ids are");
+        int tenant_id = 0;
+        try{
+            PreparedStatement get_all_tenants = conn.prepareStatement("SELECT * from Tenant");
+            ResultSet result = get_all_tenants.executeQuery();
+            while(result.next()){
+                tenant_id = result.getInt("tenant_id");    
+                System.out.println(tenant_id);            
+            }
+            result.close();
+            get_all_tenants.close();
+            } catch(SQLException se){
+                System.out.println("Server error. Please try again later.");
+                return;
+            }
+    }
+
+    // prints current lease ids in the system 
+    public static void print_lease_ids(Connection conn){
+        System.out.println("Current lease ids are");
+        int lease_id = 0;
+        try{
+            PreparedStatement get_all_leases = conn.prepareStatement("SELECT * from Lease");
+            ResultSet result = get_all_leases.executeQuery();
+            while(result.next()){
+                lease_id = result.getInt("lease_id");    
+                System.out.println(lease_id);            
+            }
+            result.close();
+            get_all_leases.close();
+            } catch(SQLException se){
+                System.out.println("Server error. Please try again later.");
+                return;
+            }
+    }
+
+    // validates card expiry entered by user in the form MMYY
     public static boolean card_expiry_validated(String date){
-        
         try{
             if(date.length() != 4){
                 return false;
             }
-            // MMYY
             int month = Integer.valueOf(date.substring(0, 2));
             int year = Integer.valueOf(date.substring(2,4));
             if(date.length() != 4){
@@ -75,8 +113,9 @@ public class Tenant {
         return true;
     }
 
-
+    // checks if there are any payments due 
     public static void checkPaymentStatus(Connection conn){
+        print_tenant_ids(conn);
         try{
             Scanner scan = new Scanner(System.in);
             int tenant_id = 0;
@@ -203,6 +242,7 @@ public class Tenant {
         }
     }
 
+    // allows user to make a payment 
     public static void makeRentalPayment(Connection conn, String payment_date, HashSet<Integer> invoices_for_tenant){
         try{
             Scanner scan = new Scanner(System.in);
@@ -282,7 +322,7 @@ public class Tenant {
                             transaction_id = generatedKeys.getInt(1);
                         }
                     } catch(SQLException se){
-                        se.printStackTrace();
+                        System.out.println("Server error. Please try again later.");
                         return;
                     }
                     insert_payment_method.close();
@@ -297,7 +337,7 @@ public class Tenant {
                         insert_card.close();
                         System.out.println("Payment successful!");
                     } catch(SQLException se){
-                        se.printStackTrace();
+                        System.out.println("Server error. Please try again later.");
                         return;
                     }
 
@@ -322,7 +362,7 @@ public class Tenant {
                         get_total_due.close();
                         balance_info.close();
                     } catch(SQLException se){
-                        se.printStackTrace();
+                        System.out.println("Server error. Please try again later.");
                     }
 
                     System.out.println("Total due:  $" + total_due);
@@ -334,7 +374,6 @@ public class Tenant {
                                 scan.nextLine();
                                 break;
                             } catch(InputMismatchException e){
-                                System.out.println(e.getMessage());
                                 System.out.println("Please enter an integer value");
                                 scan.nextLine();
                             }
@@ -347,7 +386,6 @@ public class Tenant {
                                 scan.nextLine();
                                 break;
                             } catch(InputMismatchException e){
-                                System.out.println(e.getMessage());
                                 System.out.println("Please enter an integer value");
                                 scan.nextLine();
                             }
@@ -360,7 +398,6 @@ public class Tenant {
                                 scan.nextLine();
                                 break;
                             } catch(InputMismatchException e){
-                                System.out.println(e.getMessage());
                                 System.out.println("Please enter an integer value");
                                 scan.nextLine();
                             }
@@ -373,7 +410,6 @@ public class Tenant {
                                 scan.nextLine();
                                 break;
                             } catch(InputMismatchException e){
-                                System.out.println(e.getMessage());
                                 System.out.println("Please enter an integer value");
                                 scan.nextLine();
                             }
@@ -386,7 +422,6 @@ public class Tenant {
                                 scan.nextLine();
                                 break;
                             } catch(InputMismatchException e){
-                                System.out.println(e.getMessage());
                                 System.out.println("Please enter an integer value");
                                 scan.nextLine();
                             }
@@ -399,7 +434,6 @@ public class Tenant {
                                 scan.nextLine();
                                 break;
                             } catch(InputMismatchException e){
-                                System.out.println(e.getMessage());
                                 System.out.println("Please enter an integer value");
                                 scan.nextLine();
                             }
@@ -424,7 +458,7 @@ public class Tenant {
                             transaction_id = generatedKeys.getInt(1);
                         }
                     } catch(SQLException se){
-                        se.printStackTrace();
+                        System.out.println("Server error. Please try again later.");
                         return;
                     }
                     insert_payment_method.close();
@@ -442,7 +476,7 @@ public class Tenant {
                         insert_cash.close();
                         System.out.println("Payment successful!");
                     } catch(SQLException se){
-                        se.printStackTrace();
+                        System.out.println("Server error. Please try again later.");                        
                         return;
                     }
                 }   
@@ -454,11 +488,9 @@ public class Tenant {
                     update_paid_date.executeUpdate();
                     update_paid_date.close();
                 } catch(SQLException se){
-                    se.printStackTrace();
                     return;
                 }       
             } catch(SQLException se){
-                se.printStackTrace();
                 return;
             }
         } catch(Exception e){
@@ -467,7 +499,9 @@ public class Tenant {
         }
     }
 
+    // allows user to update their personal data 
     public static void updatePersonalData(Connection conn){
+        print_tenant_ids(conn);
         try{
             Scanner scan = new Scanner(System.in);
             int tenant_id = 0;
@@ -524,7 +558,7 @@ public class Tenant {
                     get_tenant_info.close();
                     tenant_info.close();
                 } catch(SQLException se){
-                    se.printStackTrace();
+                    System.out.println("Server error. Please try again later.");   
                 }
             }
 
@@ -776,6 +810,53 @@ public class Tenant {
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
+                                if(has_pet.equalsIgnoreCase("yes")){
+                                    int lease_id = 0;
+                                    try{
+                                        PreparedStatement check_lease_exists = conn.prepareStatement("SELECT * from Tenant WHERE tenant_id=?");
+                                        check_lease_exists.setInt(1, tenant_id);
+                                        ResultSet result = check_lease_exists.executeQuery();
+                                        if(result.next()){
+                                            lease_id = result.getInt("lease_id");
+                                            result.close();
+                                            check_lease_exists.close();
+                                        }
+                                        result.close();
+                                        check_lease_exists.close();
+                                    } catch(SQLException se){
+                                        se.printStackTrace();
+                                    }
+                                    System.out.println("lease id " + lease_id);
+                                    if(lease_id != 0){
+                                        System.out.println("Since you have updated your pet status to having a pet and have a lease, you will have to pay a one time pet fee of $300 due today.");
+                                        String today_date = "";
+                                        while(true){
+                                            try{    
+                                                System.out.println("Enter today's date in the form MM-DD-YYYY");
+                                                today_date = scan.nextLine();
+                                                boolean verdict = isValidDate(today_date);
+                                                if (verdict) {
+                                                    break;
+                                                } else{
+                                                    System.out.println("Invalid date format. Try again by entering a date in the form MM-DD-YYYY");
+                                                }
+                                            } catch(Exception e){
+                                                return;
+                                            }
+                                        }   
+                                        try{
+                                            PreparedStatement pet_fees_pay = conn.prepareStatement("Insert into Payment (lease_id, date_due, date_paid, total_due) values (?, to_date(?,'mm-dd-yyyy'), ?,  ?)");
+                                            pet_fees_pay.setInt(1, lease_id);
+                                            pet_fees_pay.setString(2, today_date);
+                                            pet_fees_pay.setString(3, "");
+                                            pet_fees_pay.setDouble(4, 300);
+                                            pet_fees_pay.executeUpdate();                   
+                                            pet_fees_pay.close();
+                                        } catch(SQLException se){
+                                            se.printStackTrace();
+                                        }
+                                    }            
+                                }
                             } else if (choice == 13){
                                 return;
                             } else {
@@ -792,7 +873,9 @@ public class Tenant {
         }
     }
 
+    // allows user to add an amenity to their lease 
     public static void addAmenityToLease(Connection conn){
+        print_lease_ids(conn);
         try{
              Scanner scan = new Scanner(System.in);
             int lease_id = 0;

@@ -12,7 +12,8 @@ public class FinancialManager {
 
     }
 
-    // for each property-id & get occupancy of 1BD, 2BR, 3BR, 4BR apts ; total revenue, total profit  
+    // generates and prints financial report for each property 
+    // gets occupancy of 1 bedroom, 2 bedroom, 3 bedroom, 4 bedroom apts ; total revenue, total profit  
     public static void financialReport(Connection conn){
         try{
             HashMap<Double, String> financial_analysis = new HashMap<>();

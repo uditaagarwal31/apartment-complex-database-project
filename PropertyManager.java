@@ -12,6 +12,7 @@ public class PropertyManager {
 
     }
 
+    // validates the date entered by user in the form MM-DD-YYYY
     public static boolean isValidDate(String date){
         try{
             if(date.length() != 10){
@@ -50,6 +51,7 @@ public class PropertyManager {
         return true;
     }
 
+    // checks if move out date is between date lease was signed and date it expires 
     public boolean check_window(String date_signed, String date_expires, String date_move_out){
         try{
             // MM-DD-YYYY
@@ -98,6 +100,25 @@ public class PropertyManager {
         return true;
     }
 
+    // prints current tenant ids 
+    public static void print_tenant_ids(Connection conn){
+        System.out.println("Current tenant ids are");
+        int tenant_id = 0;
+        try{
+            PreparedStatement get_all_tenants = conn.prepareStatement("SELECT * from Tenant");
+            ResultSet result = get_all_tenants.executeQuery();
+            while(result.next()){
+                tenant_id = result.getInt("tenant_id");    
+                System.out.println(tenant_id);            
+            }
+            result.close();
+            get_all_tenants.close();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
+    }
+
+    // records prospective tenant data 
     public void recordVistorData(Connection conn){
         try{
             Scanner scan = new Scanner(System.in);
@@ -197,7 +218,6 @@ public class PropertyManager {
                 }
             }
             
-
             System.out.println("Input prospective tenant's gender");
             String gender = scan.nextLine();
             while(gender.length() == 0){ 
@@ -292,7 +312,9 @@ public class PropertyManager {
         System.out.println();
     }
 
+    // creates new lease 
     public void recordLeaseData(Connection conn){
+        print_tenant_ids(conn);
         try{
             Scanner scan = new Scanner(System.in);
             String has_pet = "";
@@ -308,7 +330,7 @@ public class PropertyManager {
                     scan.nextLine();
                 }
             }
-            while(true){ // here 
+            while(true){ 
                 try{
                     PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
                     check_tenant_exists.setInt(1, tenant_id);
@@ -583,7 +605,9 @@ public class PropertyManager {
         System.out.println();
     }
 
+    // adds dependant for tenant 
     public void addDependant(Connection conn){
+        print_tenant_ids(conn);
         try{
             Scanner scan = new Scanner(System.in);
             int tenant_id = 0;
@@ -655,6 +679,7 @@ public class PropertyManager {
         System.out.println();
     }
 
+    // sets move out date for associated apartment 
     public void set_move_out_date(Connection conn){
         try{
             Scanner scan = new Scanner(System.in);
@@ -762,6 +787,7 @@ public class PropertyManager {
         System.out.println();
     }
 
+    // adds amenity to a property 
     // ASSUMPTION: all properties have standard 10 amenities 
     public void addAmenityToProperty(Connection conn){
         try{
@@ -868,6 +894,8 @@ public class PropertyManager {
                         insert_amenity_in_amenity_table.close();
                         int amenity_type = 0;
                         String amenity_accessibility = "";
+                        int morning_accessibility = 0;
+                        int evening_accessibility = 0;
                         double monthly_cost = 0;
                         while(true){
                             System.out.println("Select if its 1 - Public Amenity \n2 - Private Amenity");
@@ -876,12 +904,43 @@ public class PropertyManager {
                                     scan.nextLine();
                                     // if its a public amenity, adds to public amenity table
                                     if (amenity_type == 1){
-                                        System.out.println("Please enter the amenity accessibility in the form {hour} AM - {hour} PM. If accessible all day, enter 24 hours");
-                                        amenity_accessibility = scan.nextLine();
-                                        while(amenity_accessibility.length() == 0){ 
-                                            System.out.println("This field can't be empty. Please enter a valid value.");
-                                            amenity_accessibility = scan.nextLine();
+                                        System.out.println("Please enter the amenity accessibility.");
+                                        while(true){ 
+                                            System.out.println("Enter the time amenity starts becoming available (AM) as a numerical digit.");
+                                            try{
+                                                morning_accessibility = scan.nextInt();
+                                                scan.nextLine();
+                                                if(morning_accessibility > 0 && morning_accessibility < 13){
+                                                    break;
+                                                } else {
+                                                    System.out.println("Please enter a valid hour.");
+                                                }   
+                                            } catch(InputMismatchException e){
+                                                System.out.println(e.getMessage());
+                                                System.out.println("Please enter an integer value");
+                                                scan.nextLine();
+                                            }
                                         }
+
+                                        while(true){ 
+                                            System.out.println("Enter the time amenity is available until (PM) as numerical digit.");
+                                            try{
+                                                evening_accessibility = scan.nextInt();
+                                                scan.nextLine();
+                                                if(evening_accessibility > 0 && evening_accessibility < 13){
+                                                    break;
+                                                } else {
+                                                    System.out.println("Please enter a valid hour.");
+                                                } 
+                                            } catch(InputMismatchException e){
+                                                System.out.println(e.getMessage());
+                                                System.out.println("Please enter an integer value");
+                                                scan.nextLine();
+                                            }
+                                        }
+                                        
+                                        amenity_accessibility = morning_accessibility + "AM - " + evening_accessibility + "PM";
+
                                         try{
                                             PreparedStatement insert_public_amenity = conn.prepareStatement("Insert into PublicAmenity (amenity_id, accessibility) values (?, ?)");
                                             insert_public_amenity.setInt(1, new_amenity_id);
