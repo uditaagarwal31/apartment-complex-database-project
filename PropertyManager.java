@@ -105,7 +105,7 @@ public class PropertyManager {
         System.out.println("Current tenant ids are");
         int tenant_id = 0;
         try{
-            PreparedStatement get_all_tenants = conn.prepareStatement("SELECT * from Tenant");
+            PreparedStatement get_all_tenants = conn.prepareStatement("SELECT * from ProspectiveTenant");
             ResultSet result = get_all_tenants.executeQuery();
             while(result.next()){
                 tenant_id = result.getInt("tenant_id");    

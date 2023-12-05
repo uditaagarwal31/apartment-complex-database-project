@@ -200,7 +200,7 @@ public class FinancialManager {
                             }
                         }
                         System.out.println("Anticipated total revenue from the current active 4 bedroom leases: $" + four_br_revenue);
-                        four_br_profits = four_br_revenue - four_br_set.size() * 850;
+                        four_br_profits = four_br_revenue - (four_br_set.size() * 850);
                         System.out.println("Anticipated profits: $" + four_br_profits);
                         System.out.println();
                     }
