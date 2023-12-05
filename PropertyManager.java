@@ -168,6 +168,7 @@ public class PropertyManager {
                 country = scan.nextLine();
             }
 
+            // checks for length == 5 and only numbers 
             System.out.println("Input prospective tenant's zipcode");
             String zipcode = scan.nextLine();
             while(zipcode.length() != 5 || !zipcode.matches("[0-9]+")){ 
@@ -175,6 +176,7 @@ public class PropertyManager {
                 zipcode = scan.nextLine();
             }
 
+            // checks for length == 10 and only numbers 
             System.out.println("Input prospective tenant's phone number (without any special characters)");
             String phone_number = scan.nextLine();
             while(phone_number.length() != 10 || !phone_number.matches("[0-9]+")){
@@ -182,6 +184,7 @@ public class PropertyManager {
                 phone_number = scan.nextLine();
             }
 
+            // uses regex to validate email 
             System.out.println("Input prospective tenant's email");
             String email = scan.nextLine();
             String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$"; // reference: https://www.geeksforgeeks.org/check-email-address-valid-not-java/
@@ -272,8 +275,8 @@ public class PropertyManager {
             
             int tenant_id = 0;
             String generatedColumns[] = { "tenant_id" };
+            // inserts new prospective tenant based on info entered 
             try{
-                // TO DO: ERROR HANDLING 
                 PreparedStatement insert_prospective_tenant = conn.prepareStatement("Insert into ProspectiveTenant (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, to_date(?,'mm-dd-yyyy'))", generatedColumns);
                 insert_prospective_tenant.setString(1, first_name);
                 insert_prospective_tenant.setString(2, middle_name);
@@ -330,6 +333,7 @@ public class PropertyManager {
                     scan.nextLine();
                 }
             }
+            // validates if this prospective tenant exists
             while(true){ 
                 try{
                     PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
@@ -358,6 +362,7 @@ public class PropertyManager {
                 }
             }
 
+            // select your apartment 
             int apartment_style_choice = 0;
             while(true){
                 try{
@@ -416,6 +421,7 @@ public class PropertyManager {
                     break;
             }
 
+            // validates lease signed date 
             String date_signed = "";
             while(true){
                 System.out.println("Input lease date signed in the form MM-DD-YYYY");
@@ -428,6 +434,7 @@ public class PropertyManager {
                 }
             }
 
+            // calculates lease expiry date 
             String date_expires = "";
             int month = Integer.valueOf(date_signed.substring(0, 2));
             int actual_date = Integer.valueOf(date_signed.substring(3, 5));
@@ -446,6 +453,7 @@ public class PropertyManager {
             String generatedColumns[] = { "lease_id" };
             int lease_id = 0;
             PreparedStatement insert_lease;
+            // inserts new lease 
             try{
                 insert_lease = conn.prepareStatement("Insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (?, ?, ?, to_date(?,'mm-dd-yyyy'), to_date(?,'mm-dd-yyyy'), ?)", generatedColumns);
                 insert_lease.setDouble(1, rent);
@@ -470,8 +478,10 @@ public class PropertyManager {
                         scan.nextLine();
                     }
                 }
+                // calculates your apartment number based on {property_id}{apartment_type}{available_unit_number}
                 String apt_substr = property_id + "" + num_bedrooms + "";
                 String last_apartment_num_set = "";
+                // gets next available unit number in this property and of this particular apartment type
                 try{
                     PreparedStatement calculate_apt_num = conn.prepareStatement("select apartment_num from apartment where apartment_num LIKE ? ");
                     calculate_apt_num.setString(1,apt_substr + "%");
@@ -503,6 +513,7 @@ public class PropertyManager {
                         se.printStackTrace();
                     }                   
                     insert_lease.close();
+                    // inserts new apartment 
                     try{
                         PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into Apartment (apartment_num, apt_size, bedroom, bathroom, property_id, lease_id) values (?, ?, ?, ?, ?, ?)");
                         preparedStatement2.setString(1, apt_substr);
@@ -523,6 +534,7 @@ public class PropertyManager {
                 se.printStackTrace();
             }
 
+            // inserts the tenant associated with new lease 
             try{
                 PreparedStatement preparedStatement3 = conn.prepareStatement("Insert into tenant (lease_id ,tenant_id) values (?, ?)");
                 preparedStatement3.setInt(1, lease_id);
@@ -533,6 +545,8 @@ public class PropertyManager {
                 se.printStackTrace();
             }
 
+            // generates invoices for security deposit, pet fees(if any) and the next 12 months of rent are generated in the Payments table
+            // security deposit, 1st month rent and pet fee due on the day you signed your lease 
             System.out.println("Security deposit of $" + security_deposit + " and 1 month's rent of $" + rent + " is due today.");
             String date_paid = "";
             try{
@@ -574,6 +588,7 @@ public class PropertyManager {
                 }
             }
 
+            // generates next 12 months of rent in payment 
             int month_copy_current_yr = month + 1;
             int month_copy_new_yr = 1;
             String monthly_rent_due = "";
@@ -622,6 +637,8 @@ public class PropertyManager {
                     scan.nextLine();
                 }
             }
+
+            // validates if this tenant exists 
             while(true){
                 try{
                     PreparedStatement check_tenant_exists = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id=?");
@@ -646,7 +663,8 @@ public class PropertyManager {
                     se.printStackTrace();
                 }
             }
-        
+            
+            // input dependant information
             System.out.println("Input dependant's first name");
             String dependant_first_name = scan.nextLine();
             while (dependant_first_name.length() == 0) {
@@ -661,6 +679,7 @@ public class PropertyManager {
                 dependant_last_name = scan.nextLine();
             }
 
+            // adds dependant with associated tenant in Dependant table
             try{
                 PreparedStatement preparedStatement2 = conn.prepareStatement("Insert into Dependant (tenant_id, first_name, last_name) values (?, ?, ?)");
                 preparedStatement2.setInt(1, tenant_id);
@@ -684,6 +703,7 @@ public class PropertyManager {
         try{
             Scanner scan = new Scanner(System.in);
             int lease_id = 0;
+            // validates apartment number entered 
             while(true){
                 System.out.println("Enter the apartment number associated with move out");
                 String apartment_num = scan.nextLine();
@@ -710,6 +730,7 @@ public class PropertyManager {
                 }
             }
 
+            // gets date_signed, date_expires, and move_out_date 
             String date_signed = "";
             String date_expires = "";
             String check_if_theres_date_move_out = "";
@@ -731,6 +752,7 @@ public class PropertyManager {
             System.out.println("Lease was signed on "+ date_signed);
             System.out.println("Lease expires on " + date_expires);
 
+            // if user has set a move out date, gives option to update it 
             if(!(check_if_theres_date_move_out == null)){
                 System.out.println("You already have a move out date set to " + check_if_theres_date_move_out + " but you can still update it!");
                 while(true){
@@ -752,6 +774,7 @@ public class PropertyManager {
                 }
             }
 
+            // prompts user to enter move out date and checks if its in between lease signing and expires window
             String date_move_out = "";
             while(true){
                 try{
@@ -771,6 +794,7 @@ public class PropertyManager {
                 }
             }
 
+            // updates move out date in table
             try{
                 PreparedStatement preparedStatement2 = conn.prepareStatement("Update Lease set date_move_out = to_date(?,'mm-dd-yyyy') WHERE lease_id=?");
                 preparedStatement2.setString(1, date_move_out);

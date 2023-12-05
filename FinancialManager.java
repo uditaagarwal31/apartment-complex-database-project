@@ -28,10 +28,10 @@ public class FinancialManager {
 
             for(int i = 1; i < 6; i++){
                 System.out.println(property_names[i-1]);
-                HashSet<Integer> one_br_set = new HashSet<>();
-                HashSet<Integer> two_br_set = new HashSet<>();
-                HashSet<Integer> three_br_set = new HashSet<>();
-                HashSet<Integer> four_br_set = new HashSet<>();
+                HashSet<Integer> one_br_set = new HashSet<>(); // stores lease ids 
+                HashSet<Integer> two_br_set = new HashSet<>(); // stores lease ids 
+                HashSet<Integer> three_br_set = new HashSet<>(); // stores lease ids 
+                HashSet<Integer> four_br_set = new HashSet<>(); // stores lease ids 
                 double one_br_revenue = 0;
                 double two_br_revenue = 0;
                 double three_br_revenue = 0;
@@ -41,6 +41,7 @@ public class FinancialManager {
                 double three_br_profits = 0;
                 double four_br_profits = 0;
                 
+                // gets total active leases and number of available and occupied apartments 
                 try{
                     PreparedStatement get_total_occupancy = conn.prepareStatement("select count(*) from apartment where property_id = ?");
                     get_total_occupancy.setInt(1, i);
@@ -71,6 +72,7 @@ public class FinancialManager {
                             se.printStackTrace();
                         }
                         
+                        // loops through all the active 1 bed room apartment leases and calculates the total revenue generated from them 
                         for(int l: one_br_set){
                             try{
                                 PreparedStatement get_revenue = conn.prepareStatement("select total_due from payment where lease_id = ?");
@@ -91,6 +93,7 @@ public class FinancialManager {
                         System.out.println("Anticipated profits: $" + one_br_profits);
                         System.out.println();
 
+                        // gets total active leases and number of available and occupied apartments 
                         try{
                             PreparedStatement get_2BR = conn.prepareStatement("select lease_id from apartment where property_id = ? and bedroom = ?");
                             get_2BR.setInt(1, i);
@@ -108,6 +111,7 @@ public class FinancialManager {
                             se.printStackTrace();
                         }
 
+                        // loops through all the active 2 bedroom apartment leases and calculates the total revenue generated from them 
                         for(int l: two_br_set){
                             try{
                                 PreparedStatement get_revenue = conn.prepareStatement("select total_due from payment where lease_id = ?");
@@ -127,7 +131,8 @@ public class FinancialManager {
                         System.out.println("Anticipated total revenue from the current active 2 bedroom leases: $" + two_br_revenue);
                         System.out.println("Anticipated profits: $" + two_br_profits);
                         System.out.println();
-
+                        
+                        // gets total active leases and number of available and occupied apartments 
                         try{
                             PreparedStatement get_3BR = conn.prepareStatement("select lease_id from apartment where property_id = ? and bedroom = ?");
                             get_3BR.setInt(1, i);
@@ -146,7 +151,7 @@ public class FinancialManager {
                             se.printStackTrace();
                         }
 
-                        
+                        // loops through all the active 3 bed room apartment leases and calculates the total revenue generated from them 
                         for(int l: three_br_set){
                             try{
                                 PreparedStatement get_revenue = conn.prepareStatement("select total_due from payment where lease_id = ?");
@@ -167,6 +172,7 @@ public class FinancialManager {
                         System.out.println("Anticipated profits: $" + three_br_profits);
                         System.out.println();
 
+                        // gets total active leases and number of available and occupied apartments 
                         try{
                             PreparedStatement get_4BR = conn.prepareStatement("select lease_id from apartment where property_id = ? and bedroom = ?");
                             get_4BR.setInt(1, i);
@@ -184,6 +190,7 @@ public class FinancialManager {
                             se.printStackTrace();
                         }
                         
+                        // loops through all the active 3 bed room apartment leases and calculates the total revenue generated from them
                         for(int l: four_br_set){
                             try{
                                 PreparedStatement get_revenue = conn.prepareStatement("select total_due from payment where lease_id = ?");
@@ -210,6 +217,7 @@ public class FinancialManager {
                     se.printStackTrace();
                 }
 
+                // calculates the total revenue &profits generated from this property by adding revenue & profits from 1,2,3,4 bedroom apartments 
                 System.out.println("Total revenue anticipated from this property: $" + (one_br_revenue + two_br_revenue + three_br_revenue + four_br_revenue));
                 System.out.println("Total profits anticipated from this property: $" + (one_br_profits + two_br_profits + three_br_profits + four_br_profits));
                 financial_analysis.put(one_br_revenue + two_br_revenue + three_br_revenue + four_br_revenue, property_names[i-1]);
@@ -217,7 +225,8 @@ public class FinancialManager {
                 System.out.println();
                 System.out.println();
             }
-
+            
+            // sorts array based on profits to get most and least profitable property 
             Arrays.sort(property_profits);
             System.out.println("The most profitable property is " + financial_analysis.get(property_profits[4]) + " with profits of $" + property_profits[4]);
             System.out.println("The least profitable property is " + financial_analysis.get(property_profits[0]) + " with profits of $" + property_profits[0]);

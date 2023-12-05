@@ -8,23 +8,11 @@ public class EastsideUncommons {
     public static void main(String[] args){
         Connection conn = DatabaseConnectionManager.connectToDatabase();
         Scanner scan = new Scanner(System.in);
-
         printRoleMenu(conn);
-        // if(role_type == 1){  
-        //     PropertyManager manager = new PropertyManager();  
-        //     propertyManagerMenu(conn, manager);
-        // } else if(role_type == 2){
-        //     tenantMenu(conn);
-        // } else if(role_type == 3){
-        //     financialManagerMenu(conn);
-        // } else if (role_type == 4){
-        //     return;
-        // }
-        DatabaseConnectionManager.closeConnection();
-        System.out.println("closed connection ");
         scan.close();
     }
 
+    // prints role menu
     public static void printRoleMenu(Connection conn){
         Scanner scan = new Scanner(System.in);
         int role = 0;
@@ -44,6 +32,8 @@ public class EastsideUncommons {
                     FinancialManager financialmanager = new FinancialManager();
                     financialManagerMenu(conn, financialmanager);
                 } else if (role == 4){
+                    DatabaseConnectionManager.closeConnection();
+                    System.out.println("closed connection");
                     System.exit(0);
                 } else {
                     System.out.println("Please enter a valid integer number between 1 and 4.");
@@ -55,6 +45,7 @@ public class EastsideUncommons {
         }    
     }
 
+    // prints property manager menu 
     public static void propertyManagerMenu(Connection conn, PropertyManager manager){
         int option;
         Scanner scan = new Scanner(System.in);
@@ -77,6 +68,8 @@ public class EastsideUncommons {
                 } else if (option == 6){
                     printRoleMenu(conn);      
                 } else if(option == 7){
+                    DatabaseConnectionManager.closeConnection();
+                    System.out.println("closed connection");
                     System.exit(0);
                 } else {
                     System.out.println("Please enter a valid integer number between 1 and 7.");
@@ -88,7 +81,7 @@ public class EastsideUncommons {
         }
     }
         
-        
+    // prints tenant menu 
     public static void tenantMenu(Connection conn, Tenant tenant){
         int option;
         Scanner scan = new Scanner(System.in);
@@ -107,7 +100,9 @@ public class EastsideUncommons {
                 } else if (option == 4){
                     printRoleMenu(conn);
                 } else if (option == 5){
-                    System.exit(0);
+                    DatabaseConnectionManager.closeConnection();
+                    System.out.println("closed connection");
+                    System.exit(0);                
                 } else {
                     System.out.println("Please enter a valid integer number between 1 and 5.");
                 }
@@ -118,7 +113,7 @@ public class EastsideUncommons {
         }
     }
     
-
+    // prints financial manager menu 
     public static void financialManagerMenu(Connection conn, FinancialManager financialManager){
         int option;
         Scanner scan = new Scanner(System.in);
@@ -133,7 +128,9 @@ public class EastsideUncommons {
                 } else if (option == 2){
                     printRoleMenu(conn);
                 } else if (option == 3){
-                    System.exit(0);
+                    DatabaseConnectionManager.closeConnection();
+                    System.out.println("closed connection");
+                    System.exit(0);  
                 } else {
                     System.out.println("Please enter a valid integer number between 1 and 3.");
                 }
@@ -143,6 +140,4 @@ public class EastsideUncommons {
             }
         }
     }
-
-
 }

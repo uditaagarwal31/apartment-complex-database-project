@@ -47,12 +47,12 @@ create table PublicAmenity(
     accessibility char(20) NOT NULL,
     foreign key(amenity_id) references Amenity
 );
-insert into PublicAmenity (amenity_id, accessibility) values (1, '24/7');
-insert into PublicAmenity (amenity_id, accessibility) values (2, '24/7');
-insert into PublicAmenity (amenity_id, accessibility) values (3, '24/7');
-insert into PublicAmenity (amenity_id, accessibility) values (4, '7/3');
-insert into PublicAmenity (amenity_id, accessibility) values (6, '24/7');
-insert into PublicAmenity (amenity_id, accessibility) values (7, '24/7');
+insert into PublicAmenity (amenity_id, accessibility) values (1, '9AM-8PM');
+insert into PublicAmenity (amenity_id, accessibility) values (2, '9AM-8PM');
+insert into PublicAmenity (amenity_id, accessibility) values (3, '6AM-2PM');
+insert into PublicAmenity (amenity_id, accessibility) values (4, '9AM-8PM');
+insert into PublicAmenity (amenity_id, accessibility) values (6, '9AM-8PM');
+insert into PublicAmenity (amenity_id, accessibility) values (7, '9AM-11PM');
 
 
 PRIVATE AMENITY 
@@ -110,18 +110,17 @@ create table PROSPECTIVETENANT(
     primary key(tenant_id)
 );
 
-// OUTDATED 
 drop table PROSPECTIVETENANT;
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Hamlen', 'Rubenchik', 'Dach', '5878 Wayridge Alley', 'Mobile', 'Alabama', 'United States', '36670', '3553131071', 'hdach0@imageshack.us', 92, 'Male', 773, 'yes');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Christye', 'Aucutt', 'Culpin', '6 Lerdahl Pass', 'Macon', 'Georgia', 'United States', '31296', '3037346124', 'cculpin1@networksolutions.com', 94, 'Polygender', 561, 'yes');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Andres', 'Liversage', 'Getcliffe', '571 Grim Point', 'Canton', 'Ohio', 'United States', '44705', '6706153303', 'agetcliffe2@sun.com', 30, 'Male', 542, 'yes');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Damara', 'Bummfrey', 'Follin', '74 Meadow Ridge Road', 'Houston', 'Texas', 'United States', '77035', '9932576069', 'dfollin3@reverbnation.com', 58, 'Female', 652, 'yes');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Eve', 'Hillock', 'Whoolehan', '58250 Nevada Drive', 'Paterson', 'New Jersey', 'United States', '07544', '7113625983', 'ewhoolehan4@cloudflare.com', 100, 'Female', 695, 'no');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Mycah', 'Willowby', 'Kamenar', '44 Twin Pines Avenue', 'Wichita', 'Kansas', 'United States', '67260', '8850138784', 'mkamenar5@pcworld.com', 20, 'Male', 619, 'no');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Bethina', 'Costy', 'Sneezem', '43 Anderson Circle', 'Salt Lake City', 'Utah', 'United States', '84145', '9627533785', 'bsneezem6@comsenz.com', 34, 'Female', 761, 'no');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Stacie', 'Hurnell', 'Cradduck', '7636 Annamark Avenue', 'York', 'Pennsylvania', 'United States', '17405', '5917216827', 'scradduck7@epa.gov', 19, 'Female', 698, 'no');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Allx', 'Semmens', 'Drohun', '12378 Thompson Alley', 'Honolulu', 'Hawaii', 'United States', '96820', '2095676505', 'adrohun8@github.com', 86, 'Female', 767, 'no');
-insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet) values ('Milo', 'Traves', 'Paolinelli', '37 Golf Parkway', 'Boston', 'Massachusetts', 'United States', '02163', '2757842560', 'mpaolinelli9@webs.com', 90, 'Male', 757, 'no');
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Hamlen', 'Rubenchik', 'Dach', '5878 Wayridge Alley', 'Mobile', 'Alabama', 'United States', '36670', '3553131071', 'hdach0@imageshack.us', 92, 'Male', 773, 'yes', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Christye', 'Aucutt', 'Culpin', '6 Lerdahl Pass', 'Macon', 'Georgia', 'United States', '31296', '3037346124', 'cculpin1@networksolutions.com', 94, 'Polygender', 561, 'yes', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Andres', 'Liversage', 'Getcliffe', '571 Grim Point', 'Canton', 'Ohio', 'United States', '44705', '6706153303', 'agetcliffe2@sun.com', 30, 'Male', 542, 'yes', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Damara', 'Bummfrey', 'Follin', '74 Meadow Ridge Road', 'Houston', 'Texas', 'United States', '77035', '9932576069', 'dfollin3@reverbnation.com', 58, 'Female', 652, 'yes', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Eve', 'Hillock', 'Whoolehan', '58250 Nevada Drive', 'Paterson', 'New Jersey', 'United States', '07544', '7113625983', 'ewhoolehan4@cloudflare.com', 100, 'Female', 695, 'no', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Mycah', 'Willowby', 'Kamenar', '44 Twin Pines Avenue', 'Wichita', 'Kansas', 'United States', '67260', '8850138784', 'mkamenar5@pcworld.com', 20, 'Male', 619, 'no', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Bethina', 'Costy', 'Sneezem', '43 Anderson Circle', 'Salt Lake City', 'Utah', 'United States', '84145', '9627533785', 'bsneezem6@comsenz.com', 34, 'Female', 761, 'no', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Stacie', 'Hurnell', 'Cradduck', '7636 Annamark Avenue', 'York', 'Pennsylvania', 'United States', '17405', '5917216827', 'scradduck7@epa.gov', 19, 'Female', 698, 'no', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Allx', 'Semmens', 'Drohun', '12378 Thompson Alley', 'Honolulu', 'Hawaii', 'United States', '96820', '2095676505', 'adrohun8@github.com', 86, 'Female', 767, 'no', to_date('2002-12-10','yyyy-mm-dd'));
+insert into PROSPECTIVETENANT (first_name, middle_name, last_name, address, city, state, country, zipcode, phone_num, email, age, gender, credit_score, has_pet, visit_date) values ('Milo', 'Traves', 'Paolinelli', '37 Golf Parkway', 'Boston', 'Massachusetts', 'United States', '02163', '2757842560', 'mpaolinelli9@webs.com', 90, 'Male', 757, 'no', to_date('2002-12-10','yyyy-mm-dd'));
 select * from PROSPECTIVETENANT;
 
 
@@ -154,13 +153,13 @@ create table Lease(
 );
 
 
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (2468,12, 4936, '18-Jul-2021', '18-Jul-2022', '18-Jul-2022');
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (4468,12, 6936, '09-Jun-2020', '09-Jun-2021', '07-Jun-2021');
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (6468,12, 8936, '01-Sep-2021', '01-Sep-2022', '31-Jul-2022');
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (2468,12, 4936, '19-Oct-2021', '19-Oct-2022', '16-Oct-2022');
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (5468,12, 8936, '08-Nov-2022', '08-Nov-2023', '04-Nov-2023');
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (1468,12, 3936, '18-May-2021', '18-May-2022', '18-May-2022');
-insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (3468,12, 6936, '09-Dec-2020', '09-Dec-2021', '08-Dec-2021');
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (2468,12, 4936, to_date('2002-12-10','yyyy-mm-dd'), to_date('2003-12-10','yyyy-mm-dd'), to_date('2003-12-10','yyyy-mm-dd'));
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (4468,12, 6936, to_date('2001-10-10','yyyy-mm-dd'), to_date('2002-10-09','yyyy-mm-dd'), to_date('2002-10-08','yyyy-mm-dd'));
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (6468,12, 8936, to_date('2004-12-10','yyyy-mm-dd'), to_date('2005-12-10','yyyy-mm-dd'), to_date('2005-11-10','yyyy-mm-dd'));
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (2468,12, 4936, to_date('2010-02-10','yyyy-mm-dd'), to_date('2011-02-10','yyyy-mm-dd'), to_date('2011-01-10','yyyy-mm-dd'));
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (5468,12, 8936, to_date('2022-12-10','yyyy-mm-dd'), to_date('2023-12-10','yyyy-mm-dd'), to_date('2023-09-10','yyyy-mm-dd'));
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (1468,12, 3936, to_date('2020-12-10','yyyy-mm-dd'), to_date('2021-12-10','yyyy-mm-dd'), to_date('2021-08-10','yyyy-mm-dd'));
+insert into Lease (monthly_rent, lease_term, security_deposit, date_signed, date_expires, date_move_out) values (3468,12, 6936, to_date('2023-12-10','yyyy-mm-dd'), to_date('2023-10-10','yyyy-mm-dd'), to_date('2023-10-10','yyyy-mm-dd'));
 
 
 
@@ -175,13 +174,13 @@ create table Payment(
     primary key(invoice_num),
     foreign key(lease_id) references Lease
 );
-insert into Payment (lease_id, date_due, date_paid, total_due) values (61, to_date('2001-12-10','yyyy-mm-dd'), to_date('2002-12-10','yyyy-mm-dd'), 3678);
-insert into Payment (lease_id, date_due, date_paid, total_due) values (1, '14-Feb-2021', '12-Feb-2021', 3678);
-insert into Payment (lease_id, date_due, date_paid, total_due) values (2, '05-Sep-2021', '04-Sep-2021', 2465);
-insert into Payment (lease_id, date_due, date_paid, total_due) values (3, '28-Nov-2020', '28-Nov-2020', 4192);
-insert into Payment (lease_id, date_due, date_paid, total_due) values (4, '19-Jul-2019', '21-Jul-2019', 3092);
-insert into Payment (lease_id, date_due, date_paid, total_due) values (5, '03-Apr-2022', '01-Apr-2022', 2856);
-insert into Payment (lease_id, date_due, date_paid, total_due) values (6, '11-May-2020', '13-May-2020', 5856);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (61, to_date('2001-12-10','yyyy-mm-dd'), to_date('2001-12-11','yyyy-mm-dd'), 300);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (1, to_date('2001-12-10','yyyy-mm-dd'), to_date('2001-12-10','yyyy-mm-dd'), 800);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (2, to_date('2001-12-10','yyyy-mm-dd'), to_date('2001-12-15','yyyy-mm-dd'), 2400);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (3, to_date('2001-12-01','yyyy-mm-dd'), to_date('2001-12-09','yyyy-mm-dd'), 2800);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (4, to_date('2001-12-10','yyyy-mm-dd'), to_date('2002-12-11','yyyy-mm-dd'), 5600);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (5, to_date('2001-12-13','yyyy-mm-dd'), to_date('2002-12-15','yyyy-mm-dd'), 3200);
+insert into Payment (lease_id, date_due, date_paid, total_due) values (6, to_date('2001-12-31','yyyy-mm-dd'), to_date('2002-12-31','yyyy-mm-dd'), 300);
 select * from payment;
 
 

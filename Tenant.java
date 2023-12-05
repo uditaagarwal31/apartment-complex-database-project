@@ -137,6 +137,7 @@ public class Tenant {
             int user_wants_to_pay_now = 0;
             int invoice_num = 0;
 
+            // validates if this tenant exists
             while(true){
                 try{
                     PreparedStatement get_tenant_info = conn.prepareStatement("SELECT * from ProspectiveTenant WHERE tenant_id = ?");
@@ -158,6 +159,7 @@ public class Tenant {
                 }
             }
 
+            // prompts user to enter the payment date 
             String payment_date = "";
             while(true){
                 try{    
@@ -179,6 +181,7 @@ public class Tenant {
             int year = Integer.valueOf(payment_date.substring(6));
             HashSet<Integer> invoices_for_tenant = new HashSet<>();
 
+            // checks payments due based on date entered by user and prints which payments are due
             try{
                 PreparedStatement getAllPayments = conn.prepareStatement("SELECT * from Payment natural join tenant WHERE tenant_id = ?");
                 getAllPayments.setInt(1, tenant_id);
@@ -189,11 +192,14 @@ public class Tenant {
                     date_paid = payments.getString("date_paid");
                     total_due = payments.getDouble("total_due");
                     invoice_num = payments.getInt("invoice_num");
+                    // checks if any payments are due based on date user entered and prints them
+                    // since there may be multiple invoices due, adds them in a hashset
                     if(Integer.valueOf(date_due.substring(5, 7)) == month && date_paid == null && year == Integer.valueOf(date_due.substring(0, 4))){
                         System.out.println("Invoice: " + invoice_num + " $" + total_due + " due by " + date_due + ".");
                         invoices_for_tenant.add(invoice_num);
                         date_due_check = date_due;
                         has_payment_due = 1;
+                        // if user is paying late, adds late fees 
                         if(Integer.valueOf(date_due.substring(8, 10)) < actual_date){
                             System.out.println("You are paying late. Late fee of $50 will be added to this invoice.");
                             System.out.println("New balance for invoice: " + invoice_num + " $" + (total_due+50));
@@ -213,7 +219,8 @@ public class Tenant {
                 }
                 payments.close();
                 getAllPayments.close();
-            
+                
+                // if user doesnt have any payments due, says that else prompts user to make payment 
                 while(true){
                     try{
                         if(has_payment_due == 0){
@@ -244,6 +251,7 @@ public class Tenant {
 
     // allows user to make a payment 
     public static void makeRentalPayment(Connection conn, String payment_date, HashSet<Integer> invoices_for_tenant){
+        // prompts user to enter the invoice number user wants to make payment for and validates it 
         try{
             Scanner scan = new Scanner(System.in);
             int invoice_num_payment_for = 0;
@@ -289,7 +297,7 @@ public class Tenant {
                 PreparedStatement insert_payment_method = conn.prepareStatement("Insert into PaymentMethod (invoice_num) values (?)", generatedColumns);
                 insert_payment_method.setInt(1, invoice_num_payment_for);
                 insert_payment_method.executeUpdate();
-                // card
+                // card payment so prompts user to fill in required fields 
                 if(payment_method_choice == 1){
                     System.out.println("Enter your 15-16 digit card number");
                     String card_num = scan.nextLine();
@@ -327,6 +335,7 @@ public class Tenant {
                     }
                     insert_payment_method.close();
 
+                    // inserts payment details into Card table 
                     try{
                         PreparedStatement insert_card = conn.prepareStatement("Insert into Card (transaction_id, card_num, card_name, expiry) values (?, ?, ?, ?)");
                         insert_card.setInt(1, transaction_id);
@@ -365,6 +374,7 @@ public class Tenant {
                         System.out.println("Server error. Please try again later.");
                     }
 
+                    // prompts user to enter corresponding number of $ bills to make payment 
                     System.out.println("Total due:  $" + total_due);
                     while(true){ 
                         while(true){ 
@@ -439,6 +449,7 @@ public class Tenant {
                             }
                         }
                         
+                        // validates that the amount entered == amount due and prints corresponding error messages
                         int amount = num_hundred_bills * 100 + num_fifty_bills * 50 + num_twenty_bills * 20 + num_ten_bills * 10 + num_five_bills * 5 + num_two_bills * 2;
                         System.out.println("Amount entered: $" + amount);
                         System.out.println("Total due:  $" + total_due);
@@ -462,7 +473,8 @@ public class Tenant {
                         return;
                     }
                     insert_payment_method.close();
-            
+                    
+                    // inserts payment details into Cash table 
                     try{
                         PreparedStatement insert_cash = conn.prepareStatement("Insert into Cash (transaction_id, num_hundred_bills, num_fifty_bills, num_twenty_bills, num_ten_bills, num_five_bills, num_two_bills) values (?, ?, ?, ?, ?, ?, ?)");
                         insert_cash.setInt(1, transaction_id);
@@ -481,6 +493,7 @@ public class Tenant {
                     }
                 }   
 
+                // updates payment date 
                 try{
                     PreparedStatement update_paid_date = conn.prepareStatement("Update Payment set date_paid = to_date(?,'mm-dd-yyyy') WHERE invoice_num=?");
                     update_paid_date.setString(1, payment_date);
@@ -561,7 +574,7 @@ public class Tenant {
                     System.out.println("Server error. Please try again later.");   
                 }
             }
-
+                    // prints current user information in the database 
                     System.out.println("In our system, your first name is " + first_name);
                     System.out.println("In our system, your middle name is " + middle_name);
                     System.out.println("In our system, your last name is " + last_name);
@@ -575,7 +588,8 @@ public class Tenant {
                     System.out.println("In our system, your gender is " + gender);
                     System.out.println("In our system, your pet status is " + has_pet);
                     
-
+                    // prompts user to choose what info they want to update and validates info entered 
+                    // updates corresponding field in the table 
                     int choice = 0;
                     while(true){
                         System.out.println("\nEnter 1 - If you want to update your information \n2 - To return to the tenant menu");
@@ -810,6 +824,7 @@ public class Tenant {
                                 } catch(SQLException se){
                                     se.printStackTrace();
                                 }
+                                // if user updated pet_status to having a pet, generates pet fees invoice in Payments table due that day 
                                 if(has_pet.equalsIgnoreCase("yes")){
                                     int lease_id = 0;
                                     try{
@@ -894,7 +909,7 @@ public class Tenant {
             }
             
             // checks if lease exists and gets associated property id
-            while(true){ // here 
+            while(true){  
                 try{
                     PreparedStatement check_lease_exists = conn.prepareStatement("SELECT * from Lease natural join apartment WHERE lease_id=?");
                     check_lease_exists.setInt(1, lease_id);
@@ -941,6 +956,7 @@ public class Tenant {
             }
 
             // gets existing amenities added to the lease and stores in a hashset
+            // prints amenities you currently have added to your lease 
             HashSet<String> existing_lease_amenities_set = new HashSet<>();
             String existing_lease_amenity = "";
             try{
@@ -968,6 +984,8 @@ public class Tenant {
                 return;
             }
             
+            // prompts user to enter amenity they'd like to add 
+            // checks if user has it and if not inserts it 
             while(true){
                 System.out.println("Enter the amenity name you'd like to add in your lease or enter 1 to return to the menu");
                 String new_amenity = scan.nextLine();
@@ -1003,7 +1021,3 @@ public class Tenant {
     }
 }
 
-// TO DO: UPDATE ERD 
-// TO DO: RUN ON SUNLAB
-// TO DO: SUNLAB SUBMISSION FIGURE 
-// TO DO: update relational insert statements 
