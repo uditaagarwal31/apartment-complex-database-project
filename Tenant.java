@@ -841,7 +841,6 @@ public class Tenant {
                                     } catch(SQLException se){
                                         se.printStackTrace();
                                     }
-                                    System.out.println("lease id " + lease_id);
                                     if(lease_id != 0){
                                         System.out.println("Since you have updated your pet status to having a pet and have a lease, you will have to pay a one time pet fee of $300 due today.");
                                         String today_date = "";
