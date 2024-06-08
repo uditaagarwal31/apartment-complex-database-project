@@ -1,4 +1,7 @@
-# 241-final-project - Udita Agarwal
+# Apartment Complex Database Project 
+
+## Project Overview
+An apartment complex project with 3 interfaces (financial manager, tenant, and property manager) accomplishing different tasks. This project is created using SQL and Java (JDBC). 
 
 ## Project Assumptions
 * 5 properties and each property has nine 1 bedroom, 2 bedroom, 3 bedroom, and 4 bedroom apartments. Leases are 12 months long and rent is due on the 1st of every month. Security deposit and one time $300 pet fee due at time of signing lease. Late payment fee of $50 will be added if tenant pays late. 
